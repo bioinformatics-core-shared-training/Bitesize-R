@@ -8,7 +8,7 @@ title: "Introduction to R for Biologists"
 This site contains the materials for an R course run by the Bioinformatics Core
 at the Cancer Research UK Cambridge Institute.
 
-April-June 2023
+March-April 2025
 
 ### Instructors
 
@@ -28,7 +28,8 @@ In this training course, we aim to provide a friendly introduction to R pitched
 at a beginners level but also for those who have been on R training courses
 previously and would like a refresher or to consolidate their skills.
 
-* **Lesson each Thursday at 9:30 am** lasting 90 minutes
+* **Lesson on Tuesday and Friday in parrallel session at 13:00 pm** lasting 90 minutes in Room 313.
+* An online catch-up session every Monday at 13.00 p.m. on teams to go over the assignments and for asking questions about the main session.
 * More **in-depth material** covering the concepts introduced on the Thursday lesson to go through in your own time
 * A **weekly assignment** consisting of exercises to practice some of the concepts covered in that and previous week's lessons
 * Please contact bioinformatics team (340A) if you have any questions. You could also email us on analysisteam-bioinformaticscore@cruk.cam.ac.uk.
@@ -43,17 +44,19 @@ previously and would like a refresher or to consolidate their skills.
 
 # Schedule
 
-1. [Introduction to R](week1.html) (20 April) - An introduction to RStudio, R objects, data types, functions and vectors
+1. [Introduction to R](week1.html)  - An introduction to RStudio, R objects, data types, functions and vectors
 
-2. [Introduction to R](week2.html) (27 April) - An introduction to other data structures
+2. [Introduction to R](week2.html)  - An introduction to other data structures
 
-3. [Working with data](week3.html) (4 May) -  Reading data into R tabular data
+3. [Working with data](week3.html)  -  Reading data into R tabular data
 
-4. [Data visualization with ggplot2](week4.html) (11 May) - A common grammar to create scatter plots, bar charts, boxplots, histograms and line graphs for time series data
+4. [Data visualization with ggplot2](week4.html)  - A common grammar to create scatter plots, bar charts, boxplots, histograms and line graphs for time series data
 
-5. [Data manipulation using dplyr](week5.html) (18 May) - Filtering and modifying tabular data, computing summary values, faceting with ggplot2
+5. [Data manipulation using dplyr](week5.html)  - Filtering and modifying tabular data, computing summary values, faceting with ggplot2
 
-6. [Grouping and combining data](week6.html) (24 May) - Advanced grouping and summarization operations, joining data from different tables, customizing ggplot2 plots
+6. [Grouping and combining data](week6.html)  - Advanced grouping and summarization operations, joining data from different tables, customizing ggplot2 plots
 
-7. [Restructuring data for analysis](week7.html) (1 June) - The concept of 'tidy data', pivoting and separating operations, ggplot2 extras
+7. [Advanced Concepts of R-Studio]  - The concepts of using Rmarkdown for reproducible research
+
+8. [Restructuring data for analysis](week7.html)  - The concept of 'tidy data', pivoting and separating operations, ggplot2 extras
 
