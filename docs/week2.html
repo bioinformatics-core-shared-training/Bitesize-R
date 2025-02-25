@@ -13,7 +13,7 @@
 
 <title>Week 2 – Introduction to other data structures</title>
 
-<script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -29,14 +29,14 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -337,6 +337,18 @@ div.tocify {
     <li>
       <a href="week3.html">Week 3 - Working with data in R</a>
     </li>
+    <li>
+      <a href="week4.html">Week 4 - Data visualization with ggplot2</a>
+    </li>
+    <li>
+      <a href="week5.html">Week 5 - Data manipulation using dplyr</a>
+    </li>
+    <li>
+      <a href="week6.html">Week 6 - Grouping and combining data</a>
+    </li>
+    <li>
+      <a href="week7.html">Week 7 - Restructuring data for analysis</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -365,148 +377,28 @@ structures</h1>
 <blockquote>
 <h4 id="aims">Aims</h4>
 <ul>
-<li>To demonstrate the other R data structures like data frames, lists
-etc</li>
-<li>To demonstrate the R markdown</li>
+<li>To demonstrate the R data structures</li>
 </ul>
 </blockquote>
-<div id="the-structure-of-data-in-r-continues" class="section level2">
-<h2>The structure of data in R continues</h2>
-<div class="figure">
-<img src="images/dataStructures.png" alt="" />
-<p class="caption">Image source:<a
+<div id="data-structures-in-r" class="section level2">
+<h2>Data structures in R</h2>
+<div class="float">
+<img src="images/dataStructures.png"
+alt="Image source:http://venus.ifca.unican.es/Rintro/dataStruct.html" />
+<div class="figcaption">Image source:<a
 href="http://venus.ifca.unican.es/Rintro/dataStruct.html"
-class="uri">http://venus.ifca.unican.es/Rintro/dataStruct.html</a></p>
+class="uri">http://venus.ifca.unican.es/Rintro/dataStruct.html</a></div>
 </div>
 <ul>
 <li>R has many data structures. These include
 <ul class="task-list">
-<li><input type="checkbox" disabled="" checked="" />Atomic vector</li>
-<li><input type="checkbox" disabled="" />factors</li>
-<li><input type="checkbox" disabled="" />matrix</li>
-<li><input type="checkbox" disabled="" />data frame</li>
-<li><input type="checkbox" disabled="" />list</li>
+<li><label><input type="checkbox" checked="" />Atomic
+vector</label></li>
+<li><label><input type="checkbox" />matrix</label></li>
+<li><label><input type="checkbox" />list</label></li>
+<li><label><input type="checkbox" />data frame</label></li>
 </ul></li>
 </ul>
-<div id="factors" class="section level3">
-<h3>Factors</h3>
-<ul>
-<li>A factor is very similar to a vector</li>
-<li>Factors are used to represent categorical data such as , sex (male
-or female), tumour stage (stage 1, stage 2 …)</li>
-<li>Factors are useful for statistical analysis and plotting</li>
-</ul>
-<pre class="r"><code>x &lt;- c(&quot;male&quot;, &quot;female&quot;, &quot;female&quot;, &quot;male&quot;)
-x</code></pre>
-<pre><code>## [1] &quot;male&quot;   &quot;female&quot; &quot;female&quot; &quot;male&quot;</code></pre>
-<pre class="r"><code>sex &lt;- factor(x) # convert vector x into a factor
-sex</code></pre>
-<pre><code>## [1] male   female female male  
-## Levels: female male</code></pre>
-<ul>
-<li>Once created, factors can only contain a pre-defined set values,
-known as levels.</li>
-</ul>
-<pre class="r"><code>levels(sex) # what are the levels in sex object</code></pre>
-<pre><code>## [1] &quot;female&quot; &quot;male&quot;</code></pre>
-<pre class="r"><code>nlevels(sex) # how many levels in sex object</code></pre>
-<pre><code>## [1] 2</code></pre>
-<ul>
-<li>In R’s memory, these factors are represented by integers (1,2,3,4
-…)</li>
-</ul>
-<pre class="r"><code>x &lt;- c(&quot;low&quot;, &quot;high&quot;, &quot;medium&quot;, &quot;high&quot;, &quot;low&quot;, &quot;medium&quot;, &quot;high&quot;)
-typeof(x) </code></pre>
-<pre><code>## [1] &quot;character&quot;</code></pre>
-<pre class="r"><code>food &lt;- factor(x) # convert x into a factor
-levels(food) # get the levels</code></pre>
-<pre><code>## [1] &quot;high&quot;   &quot;low&quot;    &quot;medium&quot;</code></pre>
-<pre class="r"><code>typeof(sex) </code></pre>
-<pre><code>## [1] &quot;integer&quot;</code></pre>
-<pre class="r"><code>food_relevel &lt;- factor(x, levels = c(&quot;low&quot;, &quot;medium&quot;, &quot;high&quot;)) # re-level the levels
-food_relevel</code></pre>
-<pre><code>## [1] low    high   medium high   low    medium high  
-## Levels: low medium high</code></pre>
-<pre class="r"><code>levels(food_relevel)</code></pre>
-<pre><code>## [1] &quot;low&quot;    &quot;medium&quot; &quot;high&quot;</code></pre>
-<pre class="r"><code>nlevels(food_relevel)</code></pre>
-<pre><code>## [1] 3</code></pre>
-<pre class="r"><code>typeof(food_relevel)</code></pre>
-<pre><code>## [1] &quot;integer&quot;</code></pre>
-<ul>
-<li><p>“is” family functions</p>
-<ul>
-<li><p>Is function start with “is.” like is.vector(),
-is.character()</p></li>
-<li><p>Output of is family of functions is a logical value TRUE or
-FALSE</p>
-<ul>
-<li>What type of data does the object contain?
-<ul>
-<li>typeof(): Indicates the type of data contained in the object</li>
-<li>is.character(): to test if the object holds character type data</li>
-<li>is.double(): to test if the object holds decimal type data</li>
-<li>is.numeric(): to test if the object holds numeric type data</li>
-<li>is.integer(): to test if the object holds integer type data</li>
-<li>is.logical(): to test if the object holds logical type data</li>
-</ul></li>
-<li>What type of data structure does the object represent?
-<ul>
-<li>class(): Describes the type of data structure that the object
-represents</li>
-<li>is.vector(): To determine if the object is a vector</li>
-<li>is.factor(): To determine if the object is a factor</li>
-<li>is.matrix(): To determine if the object is a matrix</li>
-<li>is.data.frame(): To determine if the object is a data frame</li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul>
-<pre class="r"><code>x &lt;- 1:100
-typeof(x)</code></pre>
-<pre><code>## [1] &quot;integer&quot;</code></pre>
-<pre class="r"><code>is.integer(x)</code></pre>
-<pre><code>## [1] TRUE</code></pre>
-<pre class="r"><code>is.vector(x)</code></pre>
-<pre><code>## [1] TRUE</code></pre>
-<pre class="r"><code>is.factor(x)</code></pre>
-<pre><code>## [1] FALSE</code></pre>
-<ul>
-<li><p>“as” family functions</p>
-<ul>
-<li><p>For converting one data type to another data type or one data
-structure to another data structure</p></li>
-<li><p>As function start with “as.” like as.vector(), as.character()</p>
-<ul>
-<li>Convert one data type to another data type
-<ul>
-<li>as.character(): convert to character type data</li>
-<li>as.numeric()</li>
-<li>as.integer()</li>
-<li>as.logical()</li>
-</ul></li>
-<li>Convert one type of data structure to another
-<ul>
-<li>as.vector()</li>
-<li>as.matrix()</li>
-<li>as.factor()</li>
-<li>as.data.frame()</li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul>
-<pre class="r"><code>x &lt;- 1:100
-typeof(x)</code></pre>
-<pre><code>## [1] &quot;integer&quot;</code></pre>
-<pre class="r"><code>y &lt;- as.character(x)
-typeof(y)</code></pre>
-<pre><code>## [1] &quot;character&quot;</code></pre>
-<pre class="r"><code>is.vector(x)</code></pre>
-<pre><code>## [1] TRUE</code></pre>
-<pre class="r"><code>z &lt;- as.matrix(x)
-is.matrix(z)</code></pre>
-<pre><code>## [1] TRUE</code></pre>
-</div>
 <div id="matrices" class="section level3">
 <h3>Matrices</h3>
 <ul>
@@ -713,21 +605,21 @@ is.list(result) # test if object is a list</code></pre>
 ##  Welch Two Sample t-test
 ## 
 ## data:  sample_1 and sample_2
-## t = -15.787, df = 197.74, p-value &lt; 2.2e-16
+## t = -16.631, df = 197.98, p-value &lt; 2.2e-16
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -2.394985 -1.863080
+##  -2.495495 -1.966430
 ## sample estimates:
 ## mean of x mean of y 
-##  5.005948  7.134981</code></pre>
+##  4.776954  7.007917</code></pre>
 <pre class="r"><code>names(result) # list names of the object</code></pre>
 <pre><code>##  [1] &quot;statistic&quot;   &quot;parameter&quot;   &quot;p.value&quot;     &quot;conf.int&quot;    &quot;estimate&quot;   
 ##  [6] &quot;null.value&quot;  &quot;stderr&quot;      &quot;alternative&quot; &quot;method&quot;      &quot;data.name&quot;</code></pre>
 <pre class="r"><code>result$statistic</code></pre>
 <pre><code>##         t 
-## -15.78674</code></pre>
+## -16.63124</code></pre>
 <pre class="r"><code>result$p.value</code></pre>
-<pre><code>## [1] 7.260099e-37</code></pre>
+<pre><code>## [1] 1.921668e-39</code></pre>
 </div>
 <div id="data-frames" class="section level3">
 <h3>Data frames</h3>
@@ -923,103 +815,90 @@ that summarises each column in a data frame</li>
 ##                 
 ## </code></pre>
 </div>
-</div>
-<div id="r-markdown-a-brief-introduction" class="section level2">
-<h2>R Markdown: a brief introduction</h2>
+<div id="data-type-checking-and-conversion-is-vs-as"
+class="section level3">
+<h3>Data Type Checking and Conversion: <code>is</code> vs
+<code>as</code></h3>
 <ul>
-<li><p>Documents created with R Markdown can serve as a neat record of
-your analyses.</p></li>
-<li><p>Reproducible research aims to make your analysis easy to
-understand by other researchers</p></li>
-<li><p>Using RMarkdown, you can view your code along with its output
-(graphs, tables, etc.) with conventional text to explain it, a bit like
-a notebook.</p></li>
-<li><p>Once RMarkdown file (.Rmd) is created, one can easily knit into
-different formats</p>
+<li><p>“is” family functions</p>
 <ul>
-<li>html file</li>
-<li>pdf file</li>
-<li>doc file</li>
-<li>slides</li>
+<li><p>Is function start with “is.” like is.vector(),
+is.character()</p></li>
+<li><p>Output of is family of functions is a logical value TRUE or
+FALSE</p>
+<ul>
+<li>What type of data does the object contain?
+<ul>
+<li>typeof(): Indicates the type of data contained in the object</li>
+<li>is.character(): to test if the object holds character type data</li>
+<li>is.double(): to test if the object holds decimal type data</li>
+<li>is.numeric(): to test if the object holds numeric type data</li>
+<li>is.integer(): to test if the object holds integer type data</li>
+<li>is.logical(): to test if the object holds logical type data</li>
 </ul></li>
-<li><p>An R Markdown file is made up of 3 basic components:</p>
+<li>What type of data structure does the object represent?
 <ul>
-<li>header: contains title, author, date etc</li>
-<li>markdown: contains free text, images etc</li>
-<li>R code chunks: contains actual R code</li>
+<li>class(): Describes the type of data structure that the object
+represents</li>
+<li>is.vector(): To determine if the object is a vector</li>
+<li>is.factor(): To determine if the object is a factor</li>
+<li>is.matrix(): To determine if the object is a matrix</li>
+<li>is.data.frame(): To determine if the object is a data frame</li>
 </ul></li>
-<li><p>Header:</p>
-<ul>
-<li>The markdown document starts with an optional header in YAML format
-known as the YAML metadata.</li>
-<li>In the example below the title, author and date are specified in the
-header. <img src="images/rmd_header.jpg" /></li>
 </ul></li>
-<li><p>R code chunks</p>
-<ul>
-<li>This contains actual R code just like code in the R script</li>
-<li>A comment can be added to a code by using “#”</li>
-<li>below is the example R code chunk <img
-src="images/rcode_ckunk.jpg" /></li>
 </ul></li>
-<li><p>Markdown</p>
-<ul>
-<li>The text following the header in an R Markdown file is in Markdown
-syntax.</li>
-<li>This is the syntax that gets converted to HTML format once we click
-on the Knit button</li>
-<li>The philosophy behind Markdown is that it should be easy to write
-and easy to read.</li>
-<li>Within markdown, one can add text, add images, links etc</li>
-</ul></li>
-<li></li>
-<li><p>Headings:</p></li>
-<li><p>Heading can be created by stating the line with “#” symbol</p>
-<ul>
-<li><p># Header 1</p></li>
-<li><p>## Header 2</p></li>
-<li><p>### Header 3</p></li>
-</ul></li>
-<li><p>Text type</p>
-<ul>
-<li><strong>This is bold text</strong> or <strong>This is bold
-text</strong></li>
-<li><em>This is Italic text</em> or <em>This is Italic text</em></li>
-</ul></li>
-<li><p>Create links</p>
-<ul>
-<li>general syntax to create a link to a webpage use:
-<code>[text of link](web address)</code></li>
-<li>Example:
-<code>[This is link to bitesize R course](https://bioinformatics-core-shared-training.github.io/Bitesize-R/)</code>
-this is rendered as <a
-href="https://bioinformatics-core-shared-training.github.io/Bitesize-R/">This
-is link to bitesize R course</a></li>
-</ul></li>
-<li><p>Insert images</p>
-<ul>
-<li>general syntax: <code>![Figure caption](path to image)</code></li>
-<li>Example: <code>![R Logo](img/Rlogo.png)</code></li>
-</ul></li>
-<li><p>Lists</p>
-<p>* Item 1<br />
-* Item 2<br />
-* Item 3</p></li>
 </ul>
-<p>After the R markdown file has been prepared, save it and knit it to
-the desired document like shown below.</p>
-<p><img src="images/knit.jpg" /></p>
+<pre class="r"><code>x &lt;- 1:100
+typeof(x)</code></pre>
+<pre><code>## [1] &quot;integer&quot;</code></pre>
+<pre class="r"><code>is.integer(x)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>is.vector(x)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>is.factor(x)</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<ul>
+<li><p>“as” family functions</p>
+<ul>
+<li><p>For converting one data type to another data type or one data
+structure to another data structure</p></li>
+<li><p>As function start with “as.” like as.vector(), as.character()</p>
+<ul>
+<li>Convert one data type to another data type
+<ul>
+<li>as.character(): convert to character type data</li>
+<li>as.numeric()</li>
+<li>as.integer()</li>
+<li>as.logical()</li>
+</ul></li>
+<li>Convert one type of data structure to another
+<ul>
+<li>as.vector()</li>
+<li>as.matrix()</li>
+<li>as.factor()</li>
+<li>as.data.frame()</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+<pre class="r"><code>x &lt;- 1:100
+typeof(x)</code></pre>
+<pre><code>## [1] &quot;integer&quot;</code></pre>
+<pre class="r"><code>y &lt;- as.character(x)
+typeof(y)</code></pre>
+<pre><code>## [1] &quot;character&quot;</code></pre>
+<pre class="r"><code>is.vector(x)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>z &lt;- as.matrix(x)
+is.matrix(z)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
 <div id="credit" class="section level4">
 <h4>Credit</h4>
 <p>These instructions were adapted from following sources.</p>
 <ul>
-<li><p><a href="https://datacarpentry.org">Data Carpentry</a></p></li>
-<li><p><a href="https://ourcodingclub.github.io/tutorials/rmarkdown/">R
-Markdown tutorial</a></p></li>
-<li><p><a
-href="https://ac812.github.io/reproducibility-training/">Reproducible
-Research in R</a></p></li>
+<li><a href="https://datacarpentry.org">Data Carpentry</a></li>
 </ul>
+</div>
 </div>
 </div>
 <div id="exercises" class="section level2">
@@ -1035,37 +914,67 @@ cylinders?</li>
 and more than 3 gears?</li>
 </ol></li>
 </ol>
-<details>
-<summary>
-Answer
-</summary>
-<pre class="r"><code># 1 a
-nrow(mtcars)</code></pre>
-<pre><code>## [1] 32</code></pre>
-<pre class="r"><code>ncol(mtcars)</code></pre>
-<pre><code>## [1] 11</code></pre>
-<pre class="r"><code># 1 b
-sum(mtcars$cyl == 8)</code></pre>
-<pre><code>## [1] 14</code></pre>
-<pre class="r"><code># 1 c
-sum(mtcars$cyl== 6 &amp; mtcars$gear &gt; 3)</code></pre>
-<pre><code>## [1] 5</code></pre>
+<!-- 
+<details><summary>Answer</summary>
+
+
+``` r
+# 1 a
+nrow(mtcars)
+```
+
+```
+## [1] 32
+```
+
+``` r
+ncol(mtcars)
+```
+
+```
+## [1] 11
+```
+
+``` r
+# 1 b
+sum(mtcars$cyl == 8)
+```
+
+```
+## [1] 14
+```
+
+``` r
+# 1 c
+sum(mtcars$cyl== 6 & mtcars$gear > 3)
+```
+
+```
+## [1] 5
+```
 </details>
+--->
 </div>
 <div class="exercise">
 <ol start="2" style="list-style-type: decimal">
 <li>Extract 3rd and 5th rows with 1st and 3rd columns from
 <code>mtcars</code> data set.</li>
 </ol>
-<details>
-<summary>
-Answer
-</summary>
-<pre class="r"><code>mtcars[c(3,5), c(1,3)]</code></pre>
-<pre><code>##                    mpg disp
+<!-- 
+<details><summary>Answer</summary>
+
+
+``` r
+mtcars[c(3,5), c(1,3)]
+```
+
+```
+##                    mpg disp
 ## Datsun 710        22.8  108
-## Hornet Sportabout 18.7  360</code></pre>
+## Hornet Sportabout 18.7  360
+```
 </details>
+--->
 </div>
 <div class="exercise">
 <ol start="3" style="list-style-type: decimal">
@@ -1076,21 +985,44 @@ Answer
 it?</li>
 </ol></li>
 </ol>
-<details>
-<summary>
-Answer
-</summary>
-<pre class="r"><code># 3 a
-class(airquality[1,])</code></pre>
-<pre><code>## [1] &quot;data.frame&quot;</code></pre>
-<pre class="r"><code># 3 b
-class(airquality[,1])</code></pre>
-<pre><code>## [1] &quot;integer&quot;</code></pre>
-<pre class="r"><code>is.vector(airquality[,1])</code></pre>
-<pre><code>## [1] TRUE</code></pre>
-<pre class="r"><code>is.data.frame(airquality[,1])</code></pre>
-<pre><code>## [1] FALSE</code></pre>
+<!-- 
+<details><summary>Answer</summary>
+
+``` r
+# 3 a
+class(airquality[1,])
+```
+
+```
+## [1] "data.frame"
+```
+
+``` r
+# 3 b
+class(airquality[,1])
+```
+
+```
+## [1] "integer"
+```
+
+``` r
+is.vector(airquality[,1])
+```
+
+```
+## [1] TRUE
+```
+
+``` r
+is.data.frame(airquality[,1])
+```
+
+```
+## [1] FALSE
+```
 </details>
+--->
 </div>
 <div class="exercise">
 <ol start="4" style="list-style-type: decimal">
@@ -1101,13 +1033,16 @@ class(airquality[,1])</code></pre>
 <li>list all the column names available</li>
 </ol></li>
 </ol>
-<details>
-<summary>
-Answer
-</summary>
-<pre class="r"><code># 4 a
-head(airquality, n=10)</code></pre>
-<pre><code>##    Ozone Solar.R Wind Temp Month Day
+<!-- 
+<details><summary>Answer</summary>
+
+``` r
+# 4 a
+head(airquality, n=10)
+```
+
+```
+##    Ozone Solar.R Wind Temp Month Day
 ## 1     41     190  7.4   67     5   1
 ## 2     36     118  8.0   72     5   2
 ## 3     12     149 12.6   74     5   3
@@ -1117,25 +1052,63 @@ head(airquality, n=10)</code></pre>
 ## 7     23     299  8.6   65     5   7
 ## 8     19      99 13.8   59     5   8
 ## 9      8      19 20.1   61     5   9
-## 10    NA     194  8.6   69     5  10</code></pre>
-<pre class="r"><code># 4 b
-tail(airquality, n=2)</code></pre>
-<pre><code>##     Ozone Solar.R Wind Temp Month Day
+## 10    NA     194  8.6   69     5  10
+```
+
+``` r
+# 4 b
+tail(airquality, n=2)
+```
+
+```
+##     Ozone Solar.R Wind Temp Month Day
 ## 152    18     131  8.0   76     9  29
-## 153    20     223 11.5   68     9  30</code></pre>
-<pre class="r"><code># 4 c
-names(airquality)</code></pre>
-<pre><code>## [1] &quot;Ozone&quot;   &quot;Solar.R&quot; &quot;Wind&quot;    &quot;Temp&quot;    &quot;Month&quot;   &quot;Day&quot;</code></pre>
-<pre class="r"><code>colnames(airquality)</code></pre>
-<pre><code>## [1] &quot;Ozone&quot;   &quot;Solar.R&quot; &quot;Wind&quot;    &quot;Temp&quot;    &quot;Month&quot;   &quot;Day&quot;</code></pre>
-<pre class="r"><code># 3 b
-class(airquality[,1])</code></pre>
-<pre><code>## [1] &quot;integer&quot;</code></pre>
-<pre class="r"><code>is.vector(airquality[,1])</code></pre>
-<pre><code>## [1] TRUE</code></pre>
-<pre class="r"><code>is.data.frame(airquality[,1])</code></pre>
-<pre><code>## [1] FALSE</code></pre>
+## 153    20     223 11.5   68     9  30
+```
+
+``` r
+# 4 c
+names(airquality)
+```
+
+```
+## [1] "Ozone"   "Solar.R" "Wind"    "Temp"    "Month"   "Day"
+```
+
+``` r
+colnames(airquality)
+```
+
+```
+## [1] "Ozone"   "Solar.R" "Wind"    "Temp"    "Month"   "Day"
+```
+
+``` r
+# 3 b
+class(airquality[,1])
+```
+
+```
+## [1] "integer"
+```
+
+``` r
+is.vector(airquality[,1])
+```
+
+```
+## [1] TRUE
+```
+
+``` r
+is.data.frame(airquality[,1])
+```
+
+```
+## [1] FALSE
+```
 </details>
+--->
 </div>
 <div class="exercise">
 <ol start="5" style="list-style-type: decimal">
@@ -1148,24 +1121,42 @@ Hint: Use<code>cor.test</code> function.
 <li>What is the estimated correlation coefficient?</li>
 </ol></li>
 </ol>
-<details>
-<summary>
-Answer
-</summary>
-<pre class="r"><code># 1 a
-results &lt;- cor.test(airquality$Ozone, airquality$Solar.R)
-results$conf.int</code></pre>
-<pre><code>## [1] 0.173194 0.502132
-## attr(,&quot;conf.level&quot;)
-## [1] 0.95</code></pre>
-<pre class="r"><code># 1 b
-result$p.value</code></pre>
-<pre><code>## [1] 7.260099e-37</code></pre>
-<pre class="r"><code># 1 c
-results$estimate</code></pre>
-<pre><code>##       cor 
-## 0.3483417</code></pre>
+<!-- 
+<details><summary>Answer</summary>
+
+
+``` r
+# 1 a
+results <- cor.test(airquality$Ozone, airquality$Solar.R)
+results$conf.int
+```
+
+```
+## [1] 0.173194 0.502132
+## attr(,"conf.level")
+## [1] 0.95
+```
+
+``` r
+# 1 b
+result$p.value
+```
+
+```
+## [1] 1.921668e-39
+```
+
+``` r
+# 1 c
+results$estimate
+```
+
+```
+##       cor 
+## 0.3483417
+```
 </details>
+--->
 </div>
 </div>
 

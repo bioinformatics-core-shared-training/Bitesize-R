@@ -7,6 +7,7 @@ title: "Data types and structures"
 > * Install R and RStudio
 > * Install the tidyverse collection of R packages
 > * Introduce RStudio, which we will use to write R scripts throughout this course.
+> * Create an R Project
 > * Introduce data types and data structures
 
 
@@ -228,6 +229,24 @@ The **Help tab** is a _massively useful_ resource that lets you search the R hel
 
 ---
 
+## Create an R Project
+
+Before starting to write code in RStudio, we need to create an R Project.  The idea behind an R project is  to have a workspace where you can keep all the files and settings associated with the project together.  In that way, next time you open the R Project it would be easier to resume work.  
+
+To create an "R Project":
+
+1. Start RStudio.
+2. Under the `File` menu, click on `New Project`. Choose `New Directory`, then
+  `New Project`.
+3. Enter a name for this new folder (or "directory"), and choose a convenient
+  location for it. This will be your **working directory** for the rest of the
+  day (*e.g.,* `~/my_first_project`).
+4. Click on `Create Project`.
+5. (Optional) Set Preferences to 'Never' save workspace in RStudio.
+
+RStudio's default preferences generally work well, but saving a workspace to
+`.RData` can be cumbersome, especially if you are working with larger datasets as this would save all the data that is loaded into R into the `.RData` file.  
+To turn that off, go to `Tools` --> `Global Options` and select the 'Never' option for `Save workspace to .RData' on exit.`
 
 # Our first look at the R language
 
@@ -295,7 +314,6 @@ Mathematical operations such as addition and multiplication are performed using 
   * data frame
   * matrix
   * list
-  * factors
 
 
 ### Atomic vector
@@ -377,7 +395,7 @@ x <- c(1:100) # create values from 1 to 100
 ```
 
 
-* The values in a vector can be of one and only one type, such as numerics, integers, characters, logic, complexes, or raw data.
+* The values in a vector can be of one and only one type, such as numeric, integers, characters, logic, complexes, or raw data.
 * When we attempt to mix different data types in a single vector, R automatically converts the data types, this phenomenon is called [Coercion](https://www.zigya.com/blog/what-is-coercion-in-r/)
 
 ```{r}

@@ -4,7 +4,6 @@ title: "Week 3 - Working with data in R"
 
 > #### Learning objectives
 >
-> * Create an R Project
 > * Learn how to install and use packages that extend R's basic functionality
 > * Read data in tabular format into R
 > * Calculate summary statistics on your tabular data
@@ -16,25 +15,7 @@ title: "Week 3 - Working with data in R"
 >     * **`arrange()`** for sorting the observations in your table 
 
 
-## Create an R Project
 
-Before starting to write code in RStudio, we need to create an R Project.  The idea behind an R project is  to have a workspace where you can keep all the files and settings associated with the project together.  In that way, next time you open the R Project it would be easier to resume work.  
-
-To create an "R Project":
-
-1. Start RStudio.
-2. Under the `File` menu, click on `New Project`. Choose `New Directory`, then
-  `New Project`.
-3. Enter a name for this new folder (or "directory"), and choose a convenient
-  location for it. This will be your **working directory** for the rest of the
-  day (*e.g.,* `~/my_first_project`).
-4. Click on `Create Project`.
-5. (Optional) Set Preferences to 'Never' save workspace in RStudio.
-
-RStudio's default preferences generally work well, but saving a workspace to
-`.RData` can be cumbersome, especially if you are working with larger datasets as this would save all the data that is loaded into R into the `.RData` file.  
-To turn that off, go to `Tools` --> `Global Options` and select the 'Never' option
-for `Save workspace to .RData' on exit.`
 
 # Getting started with data in R
 
@@ -44,7 +25,7 @@ visualizing data, and particularly data in a tabular form. This collection of
 packages is known as the **tidyverse**.
 
 Learning the **tidyverse** is more than just learning about some helpful
-functions to get certain tasks done. The tidyverse packages form a coherant
+functions to get certain tasks done. The tidyverse packages form a coherent
 system for data manipulation, exploration and visualization that share a common
 design philosophy. There is a certain elegance to code crafted using the
 tidyverse approach that is in stark contrast to the strange and often cryptic
@@ -58,32 +39,19 @@ superior tidyverse derivative, the **tibble**.
 
 # Packages
 
-Before we move on to the tidyverse version of a data frame, the tibble, we have
-to load the tidyverse package that provides the tibble functionality. It doesn't
-come with the set of packages loaded when you first start R.
+Before we move on to the tidyverse version of a data frame, the tibble, we need to load the package that provides the tibble functionality. It doesn't come loaded with R by default.
 
-There are thousands of R packages that extend R's core functionality to provide
-specialized functions for doing all kinds of things. There are R packages that
-provide various kinds of visualizations and plotting functions, others that let
-us manipulate data in interesting and useful ways, and still others that give us
-access to cutting-edge machine learning algorithms. 
+There are thousands of R packages available, each extending R’s core functionality with specialized functions for various tasks. Some packages provide advanced visualization and plotting functions, others offer tools for data manipulation, and some give access to cutting-edge machine learning algorithms.
 
-You need to load a package using the **`library()`** function in order to be
-able to use the functions and data sets that the package provides. The tibble
-data structure is part of the **`tibble`** package so to make this available you
-would run the following command:
+To use the functions and datasets from a package, you need to load it with the `library()` function. Since the `tibble` data structure is part of the `tibble` package, you can make it available by running the following command:
 
 ```{r eval = FALSE}
 library(tibble)
 ```
 
-The `tibble` package also contains various useful functions for converting other
-data structures, e.g. data frames, to tibbles and for working with tibble
-objects.
+The `tibble` package also contains various useful functions for converting other data structures, such as data frames, to tibbles and for working with tibble objects.
 
-The `tibble` package is one of a collection of packages that make up the
-tidyverse. It is usually more convenient to load the core tidyverse packages
-in one go as follows.
+The tibble package is part of the collection of packages that make up the tidyverse. It is usually more convenient to load the core tidyverse packages all at once, as follows:
 
 ```{r}
 library(tidyverse)
@@ -137,8 +105,7 @@ computer.
 The tidyverse brings us a special type of data frame called the **`tibble`**.
 
 Data frames have some rather quirky and annoying behaviours and the `tibble`
-addresses some of these issues to make life a little easier. We'll first look at
-how we can create a tibble and then will have a quick look at some of the
+addresses some of these issues to make life a little easier. We'll first look at how we can create a tibble and then will have a quick look at some of the
 advantages of the tibble over the data frame.
 
 ## Creating a tibble
@@ -172,36 +139,26 @@ class(iris_tibble)
 
 ## Tibbles vs data frames
 
-So let's now have a look at what capabilities and behaviours these additional
-types confer and what the main differences are between tibbles and data frames.
+So, let's now take a look at the capabilities and behaviors these additional types confer, as well as the main differences between tibbles and data frames.
 
 The first immediate difference from a `data.frame` is that a `tibble` displays 
 the data type of each column under its name and it only prints as many columns 
-as fit on one screen. Another difference is that printing a `tibble` will not 
-print the whole dataset, but just the first 10 rows and only the columns that 
-fit the screen (same as `head` but with 10 rows instead of 6). If you would 
-like to print more than the first 10 rows use the `print` function.
+as fit on one screen. Another difference is that printing a `tibble` will not display the entire dataset; instead, it will show just the first 10 rows and only the columns that fit on the screen (similar to the `head` function, but with 10 rows instead of 6). If you would 
+like to print more than the first 10 rows use the, `print` function.
 
-Since printing `tibble` already gives you information about the data structure, 
-the data types of each column and the size of the dataset, the `str` function is
-not as much useful as it was when using `data.frame`.  
+Since printing `tibble` already provides information about the data structure, 
+the data types of each column, and the size of the dataset, the `str` function is less useful compared to when you’re working with a `data.frame`.  
 
 ```{r, results=TRUE}
 ## inspect the data
 str(iris_tibble)
 ```
 
-Notice that rather than specifing `tibble` as the data structure of surveys, the first line of `str`'s output now specifies `‘spec_tbl_df’, ‘tbl_df’, ‘tbl’ and 'data.frame'` which can be a bit confusing. These are the classes `tibble` inherts from which in simple terms means that `tibble` is a `data.frame` with a few modifications.  Therefore, most of the functions that were used with `data.frame` can also be used with `tibble`.
-
-
-
-
+Notice that rather than specifying `tibble` as the data structure of surveys, the first line of `str`'s output now lists `‘spec_tbl_df’, ‘tbl_df’, ‘tbl’ and 'data.frame'` which might be a bit confusing. These are the classes `tibble` inherits from, meaning that in simple terms, `tibble` is a `data.frame` with a few modifications. As a result, most functions that work with `data.frame` can also be used with `tibble`.
 
 # Reading data into R
 
-Another of the tidyverse packages loaded when we ran `library(tidyverse)` is the
-`readr` package, which provides functions for reading tabular data into a tibble
-and writing tibbles to tab-delmited and comma-separated value (CSV) files.
+Another tidyverse package loaded when we ran `library(tidyverse)` is the `readr` package, which provides functions for reading tabular data into a tibble and writing tibbles to tab-delmited and comma-separated value (CSV) files.
 
 For example, the clinical data for the METABRIC breast cancer dataset generated
 at CRUK CI can be downloaded as a tab-delimited file from
@@ -214,6 +171,7 @@ cancer genes as part of the METABRIC study
 Let us first download the file and have a look at the data.  
 
 We are going to use the R function `download.file()` to download the TSV/CSV files that contains the data.  
+
 ```{r, eval=FALSE, purl=TRUE}
 download.file(url="https://bioinformatics-core-shared-training.github.io/Bitesize-R/data/brca_metabric_clinical_data.tsv",destfile = "data/brca_metabric_clinical_data.tsv")
 download.file(url="https://bioinformatics-core-shared-training.github.io/Bitesize-R/data/metabric_clinical_and_expression_data.csv",destfile = "data/metabric_clinical_and_expression_data.csv")
@@ -742,7 +700,6 @@ printing out a data frame or writing out the table to a file.
 
 In this session we have covered the following concepts:
 
-* Create an R Project
 * How to install and use packages that extend R's basic functionality
 * How to read tabular data into R
 * The tibble, a superior version of the data frame

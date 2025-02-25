@@ -1,115 +1,23 @@
 ---
-title: "Week 2 -- Introduction to other data structures"
+title: "Week 2 -- Introduction to R data structures"
 ---
 
 > #### Aims
 >
-> * To demonstrate the other R data structures like data frames, lists etc
-> * To demonstrate the R markdown
+> * To demonstrate the R data structures
 
 
-## The structure of data in R continues
+## Data structures in R
 
 ![Image source:http://venus.ifca.unican.es/Rintro/dataStruct.html](./images/dataStructures.png)
 
 
 * R has many data structures. These include
   - [x] Atomic vector
-  - [ ] factors
   - [ ] matrix
-  - [ ] data frame
   - [ ] list
+  - [ ] data frame
   
-
-### Factors
-
-* A factor is very similar to a vector
-* Factors are used to represent categorical data such as , sex (male or female), tumour stage (stage 1, stage 2 ...)
-* Factors are useful for statistical analysis and plotting
-
-```{r}
-x <- c("male", "female", "female", "male")
-x
-sex <- factor(x) # convert vector x into a factor
-sex
-```
-
-* Once created, factors can only contain a pre-defined set values, known as levels.
-
-```{r}
-levels(sex) # what are the levels in sex object
-nlevels(sex) # how many levels in sex object
-```
-
-* In R’s memory, these factors are represented by integers (1,2,3,4 ...)
-
-```{r}
-x <- c("low", "high", "medium", "high", "low", "medium", "high")
-typeof(x) 
-food <- factor(x) # convert x into a factor
-levels(food) # get the levels
-typeof(sex) 
-food_relevel <- factor(x, levels = c("low", "medium", "high")) # re-level the levels
-food_relevel
-levels(food_relevel)
-nlevels(food_relevel)
-typeof(food_relevel)
-```
-
-* "is" family functions
-
-  * Is function start with "is." like is.vector(), is.character()
-  * Output of is family of functions is a logical value TRUE or FALSE
-
-    * What type of data does the object contain?
-      * typeof(): Indicates the type of data contained in the object 
-      * is.character(): to test if the object holds character type data
-      * is.double(): to test if the object holds decimal type data
-      * is.numeric(): to test if the object holds numeric type data
-      * is.integer(): to test if the object holds integer type data
-      * is.logical(): to test if the object holds logical type data
-  
-    * What type of data structure does the object represent?
-      * class(): Describes the type of data structure that the object represents
-      * is.vector(): To determine if the object is a vector
-      * is.factor(): To determine if the object is a factor
-      * is.matrix(): To determine if the object is a matrix
-      * is.data.frame(): To determine if the object is a data frame
-
-```{r}
-x <- 1:100
-typeof(x)
-is.integer(x)
-is.vector(x)
-is.factor(x)
-```
-* "as" family functions
-
-  * For converting one data type to another data type or one data structure to another data structure
-  * As function start with "as." like as.vector(), as.character()
-
-    * Convert one data type to another data type
-      * as.character(): convert to character type data
-      * as.numeric() 
-      * as.integer()
-      * as.logical()
-  
-    * Convert one type of data structure to another
-      * as.vector()
-      * as.matrix()
-      * as.factor()
-      * as.data.frame()
-    
-```{r}
-x <- 1:100
-typeof(x)
-y <- as.character(x)
-typeof(y)
-
-is.vector(x)
-z <- as.matrix(x)
-is.matrix(z)
-```
 
 ### Matrices 
 
@@ -354,79 +262,65 @@ From next week you will be working with tidyverse.
 summary(iris)
 ```
 
+### Data Type Checking and Conversion: `is` vs `as`
 
-## R Markdown: a brief introduction
 
-* Documents created with R Markdown can serve as a neat record of your analyses.
-* Reproducible research aims to make your analysis easy to understand by other researchers 
-* Using RMarkdown, you can view your code along with its output (graphs, tables, etc.) with conventional text to explain it, a bit like a notebook.
+* "is" family functions
 
-* Once RMarkdown file (.Rmd) is created, one can easily knit into different formats
-  * html file
-  * pdf file
-  * doc file
-  * slides
+  * Is function start with "is." like is.vector(), is.character()
+  * Output of is family of functions is a logical value TRUE or FALSE
 
-* An R Markdown file is made up of 3 basic components:
-  * header: contains title, author, date etc
-  * markdown: contains free text, images etc
-  * R code chunks: contains actual R code
+    * What type of data does the object contain?
+      * typeof(): Indicates the type of data contained in the object 
+      * is.character(): to test if the object holds character type data
+      * is.double(): to test if the object holds decimal type data
+      * is.numeric(): to test if the object holds numeric type data
+      * is.integer(): to test if the object holds integer type data
+      * is.logical(): to test if the object holds logical type data
   
-* Header:
-  * The markdown document starts with an optional header in YAML format known as the YAML metadata.
-  * In the example below the title, author and date are specified in the header. 
-  ![](./images/rmd_header.jpg)
+    * What type of data structure does the object represent?
+      * class(): Describes the type of data structure that the object represents
+      * is.vector(): To determine if the object is a vector
+      * is.factor(): To determine if the object is a factor
+      * is.matrix(): To determine if the object is a matrix
+      * is.data.frame(): To determine if the object is a data frame
+
+```{r}
+x <- 1:100
+typeof(x)
+is.integer(x)
+is.vector(x)
+is.factor(x)
+```
+
+
+* "as" family functions
+
+  * For converting one data type to another data type or one data structure to another data structure
+  * As function start with "as." like as.vector(), as.character()
+
+    * Convert one data type to another data type
+      * as.character(): convert to character type data
+      * as.numeric() 
+      * as.integer()
+      * as.logical()
   
-* R code chunks
-  * This contains actual R code just like code in the R script
-  * A comment can be added to a code by using "#"
-  * below is the example R code chunk
-  ![](./images/rcode_ckunk.jpg)
+    * Convert one type of data structure to another
+      * as.vector()
+      * as.matrix()
+      * as.factor()
+      * as.data.frame()
+    
+```{r}
+x <- 1:100
+typeof(x)
+y <- as.character(x)
+typeof(y)
 
-* Markdown
-
-  * The text following the header in an R Markdown file is in Markdown syntax.
-  * This is the syntax that gets converted to HTML format once we click on the Knit button
-  * The philosophy behind Markdown is that it should be easy to write and easy to read.
-  * Within markdown, one can add text, add images, links etc
-
-* 
-  
-*  Headings:
-  * Heading can be created by stating the line with "#" symbol
-  
-    * \# Header 1
-
-    * \#\# Header 2
-
-    * \#\#\# Header 3
-
-
-* Text type
-
-  * **This is bold text** or __This is bold text__
-  * *This is Italic text* or _This is Italic text_
-
-* Create links
-  * general syntax to create a link to a webpage use: `[text of link](web address)`
-  * Example: `[This is link to bitesize R course](https://bioinformatics-core-shared-training.github.io/Bitesize-R/)` this is rendered as [This is link to bitesize R course](https://bioinformatics-core-shared-training.github.io/Bitesize-R/)
-
-* Insert images
-
-  * general syntax: `![Figure caption](path to image)`
-  * Example: `![R Logo](img/Rlogo.png)`
-
-
-* Lists  
-
-  \* Item 1  
-  \* Item 2  
-  \* Item 3
-
-
-After the R markdown file has been prepared, save it and knit it to the desired document like shown below.
-
-![](./images/knit.jpg)
+is.vector(x)
+z <- as.matrix(x)
+is.matrix(z)
+```
 
 #### Credit
 
@@ -434,23 +328,17 @@ These instructions were adapted from following sources.
 
 * [Data Carpentry](https://datacarpentry.org)
 
-* [R Markdown tutorial](https://ourcodingclub.github.io/tutorials/rmarkdown/)
-
-* [Reproducible Research in R](https://ac812.github.io/reproducibility-training/)
-
 
 ## Exercises
 
-
-
 :::exercise
-
 1. Using `mtcars` dataset answer the following.
 
     a. How many rows and columns in the `mtcars` data set?
     b. How many cars in the `mtcars` data set have 8 cylinders?
     c. How many cars in the `mtcars` data set have 6 cylinders and more than 3 gears?
 
+<!-- 
 <details><summary>Answer</summary>
 
 ```{r ex_1, purl=FALSE}
@@ -465,6 +353,7 @@ sum(mtcars$cyl == 8)
 sum(mtcars$cyl== 6 & mtcars$gear > 3)
 ```
 </details>
+--->
 :::
 
 
@@ -472,22 +361,23 @@ sum(mtcars$cyl== 6 & mtcars$gear > 3)
 
 2. Extract 3rd and 5th rows with 1st and 3rd columns from `mtcars` data set.
 
+<!-- 
 <details><summary>Answer</summary>
 
 ```{r ex_2, purl=FALSE}
 mtcars[c(3,5), c(1,3)]
 ```
 </details>
+--->
 :::
-
 
 :::exercise
 3. From `airquality` data set
     a. Identify the data structure of the first row by extracting it?
     b. Identify the data structure of the first column by extracting it?
-
+    
+<!-- 
 <details><summary>Answer</summary>
-
 ```{r ex_3, purl=FALSE}
 # 3 a
 class(airquality[1,])
@@ -498,8 +388,8 @@ is.vector(airquality[,1])
 is.data.frame(airquality[,1])
 ```
 </details>
+--->
 :::
-
 
 :::exercise
 4. Using `airquality` data set
@@ -507,8 +397,8 @@ is.data.frame(airquality[,1])
     b. Show last 2 rows
     c. list all the column names available
 
+<!-- 
 <details><summary>Answer</summary>
-
 ```{r ex_4, purl=FALSE}
 # 4 a
 head(airquality, n=10)
@@ -525,6 +415,8 @@ is.vector(airquality[,1])
 is.data.frame(airquality[,1])
 ```
 </details>
+--->
+
 :::
 
 
@@ -534,7 +426,7 @@ is.data.frame(airquality[,1])
     b. what is the p-value?
     c. What is the estimated correlation coefficient?
 
-
+<!-- 
 <details><summary>Answer</summary>
 
 ```{r ex_5, purl=FALSE}
@@ -549,14 +441,6 @@ result$p.value
 results$estimate
 ```
 </details>
+--->
+
 :::
-
-
-
-
-
-
-
-
-
-
