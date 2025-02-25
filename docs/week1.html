@@ -13,7 +13,7 @@
 
 <title>Data types and structures</title>
 
-<script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -29,14 +29,14 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -334,6 +334,21 @@ div.tocify {
     <li>
       <a href="week2.html">Week 2 - An introduction to other data structures</a>
     </li>
+    <li>
+      <a href="week3.html">Week 3 - Working with data in R</a>
+    </li>
+    <li>
+      <a href="week4.html">Week 4 - Data visualization with ggplot2</a>
+    </li>
+    <li>
+      <a href="week5.html">Week 5 - Data manipulation using dplyr</a>
+    </li>
+    <li>
+      <a href="week6.html">Week 6 - Grouping and combining data</a>
+    </li>
+    <li>
+      <a href="week7.html">Week 7 - Restructuring data for analysis</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -363,17 +378,17 @@ div.tocify {
 <ul>
 <li>Install R and RStudio</li>
 <li>Install the tidyverse collection of R packages</li>
-<li>To introduce Rstudio that we will be using, to write R scripts, in
-this course</li>
-<li>To introduce data types and data structures</li>
+<li>Introduce RStudio, which we will use to write R scripts throughout
+this course.</li>
+<li>Introduce data types and data structures</li>
 </ul>
 </blockquote>
 <div id="installing-software-you-will-need" class="section level1">
 <h1>Installing software you will need</h1>
 <p>Before starting this course you will need to ensure that your
 computer is set up with the required software.</p>
-<p>If you have any difficulty installing any of this software then
-please contact one of the trainers for help.</p>
+<p>If you encounter any issues installing the software, reach out to a
+trainer for assistance.</p>
 </div>
 <div id="r-and-rstudio" class="section level1">
 <h1>R and RStudio</h1>
@@ -425,10 +440,10 @@ href="https://cran.r-project.org/bin/windows/base/release.htm">CRAN
 website</a>.</li>
 <li>Run the <code>.exe</code> file that was just downloaded</li>
 <li>Go to the <a
-href="https://posit.co/download/rstudio-desktop/#download">RStudio
+href="https://posit.co/download/RStudio-desktop/#download">RStudio
 download page</a></li>
-<li>Under <em>Installers</em> select <strong>RStudio-2023.xx.y-zzz.EXE -
-Windows 10/11</strong> (where x, y, and z represent version
+<li>Under <em>Installers</em> select <strong> RStudio-2024.xx.y-zzz.EXE
+- Windows 10/11</strong> (where x, y, and z represent version
 numbers)</li>
 <li>Double click the file to install it</li>
 <li>Once it’s installed, open RStudio to make sure it works and you
@@ -462,40 +477,38 @@ class="section level4">
 <li>How to check chip type on Mac? Click on apple logo on top left, then
 chick on About This Mac.</li>
 </ul>
-<div class="figure">
-<img src="images/mac_intel.jpg" alt="" />
-<p class="caption">Intel chip</p>
+<div class="float">
+<img src="images/mac_intel.jpg" alt="Intel chip" />
+<div class="figcaption">Intel chip</div>
 </div>
-<div class="figure">
-<img src="images/Mac_Mchip.png" alt="" />
-<p class="caption">M chip</p>
+<div class="float">
+<img src="images/Mac_Mchip.png" alt="M chip" />
+<div class="figcaption">M chip</div>
 </div>
 <ul>
-<li>Download R from the <a
-href="https://cran.r-project.org/bin/macosx/">CRAN website</a>.</li>
-</ul>
-<p><img src="images/R_mac_types.jpg" /></p>
-<ul>
-<li>Select appropriate R <code>.pkg</code> file for the latest R version
+<li><p>Download R from the <a
+href="https://cran.r-project.org/bin/macosx/">CRAN website</a>.</p></li>
+<li><p>Select appropriate R <code>.pkg</code> file for the latest R
+version</p>
 <ul>
 <li>For M type chip: download R-x.y.z-arm64.pkg (where x, y, and z
 represent version numbers)</li>
 <li>For inter chip: download R-x.y.z.pkg (where x, y, and z represent
 version numbers)</li>
 </ul></li>
-<li>Double click on the downloaded file to install R</li>
-<li>It is also a good idea to install <a
+<li><p>Double click on the downloaded file to install R</p></li>
+<li><p>It is also a good idea to install <a
 href="https://www.xquartz.org/">XQuartz</a> (needed by some
-packages)</li>
-<li>Go to the <a
-href="https://posit.co/download/rstudio-desktop/#download">RStudio
-download page</a></li>
-<li>Under <em>Installers</em> select <strong>RStudio-2023.xx.y-zzz.DMG -
-Mac OS 11+ (64-bit)</strong> (where x, y, and z represent version
-numbers)</li>
-<li>Double click the file to install RStudio</li>
-<li>Once it’s installed, open RStudio to make sure it works and you
-don’t get any error messages.</li>
+packages)</p></li>
+<li><p>Go to the <a
+href="https://posit.co/download/RStudio-desktop/#download">RStudio
+download page</a></p></li>
+<li><p>Under <em>Installers</em> select
+<strong>RStudio-2024.xx.y-zzz.DMG - Mac OS 13+ (64-bit)</strong> (where
+x, y, and z represent version numbers)</p></li>
+<li><p>Double click the file to install RStudio</p></li>
+<li><p>Once it’s installed, open RStudio to make sure it works and you
+don’t get any error messages.</p></li>
 </ul>
 </div>
 </div>
@@ -512,11 +525,11 @@ manager (e.g., for Debian/Ubuntu run
 as the versions provided by this are usually out of date. In any case,
 make sure you have at least R 3.3.1.</li>
 <li>Go to the <a
-href="https://posit.co/download/rstudio-desktop/#download">RStudio
+href="https://posit.co/download/RStudio-desktop/#download">RStudio
 download page</a></li>
 <li>Under <em>Installers</em> select the version that matches your
 distribution, and install it with your preferred method (e.g., with
-Debian/Ubuntu <code>sudo dpkg -i RSTUDIO-2023.xx.y-zzz-AMD64.DEB</code>
+Debian/Ubuntu <code>sudo dpkg -i RStudio-2024.xx.y-zzz-AMD64.DEB</code>
 at the terminal).</li>
 <li>Once it’s installed, open RStudio to make sure it works and you
 don’t get any error messages.</li>
@@ -541,64 +554,64 @@ typing the names of the packages separated by a comma.</p></li>
 <div id="why-learn-r" class="section level1">
 <h1>Why learn R?</h1>
 <ul>
-<li><p>R involves creating &amp; using scripts which makes the steps you
-used in your analysis clear and can be inspected by someone else for
-feedback and error-checking.</p></li>
-<li><p>R code is great for reproducibility. An increasing number of
-journals and funding agencies expect analyses to be reproducible, so
-knowing R will give you an edge with these requirements.</p></li>
-<li><p>R integrates with other tools to generate manuscripts from your
-code. This document (RMarkdown a .Rmd file) is a case in point.</p></li>
-<li><p>R is interdisciplinary and extensible and has thousands of
-installable packages to extend its capabilities. R has packages for
-image analysis, GIS, time series, population genetics, and a lot
-more.</p></li>
-<li><p>R scales well to work on data of all shapes and sizes.</p></li>
-<li><p>R can connect to spreadsheets, databases, and many other data
-formats, on your computer or on the web.</p></li>
-<li><p>R produces high-quality graphics suitable for publication in
-journals or the web.</p></li>
-<li><p>R has a large and welcoming community - Thousands use R daily and
-many of them are willing to help you through websites such as Stack
-Overflow or the RStudio community.</p></li>
-<li><p>Not only is R free, but it is also open-source and
-cross-platform.</p></li>
+<li><p>R allows you to create and use scripts, making your analysis
+steps transparent and easy to inspect for feedback and
+error-checking.</p></li>
+<li><p>R enhances <strong>reproducibility</strong>, a growing
+expectation among journals and funding agencies—giving you an edge in
+research and publishing.</p></li>
+<li><p>R integrates seamlessly with other tools to generate manuscripts
+directly from your code. This document (an R Markdown .Rmd file) is a
+perfect example.</p></li>
+<li><p>R is <strong>interdisciplinary and extensible</strong>, with
+thousands of installable packages for tasks such as image analysis, GIS,
+time series analysis, and population genetics.</p></li>
+<li><p>R scales efficiently to handle <strong>datasets of all shapes and
+sizes</strong>.</p></li>
+<li><p>R can connect to <strong>spreadsheets, databases, and various
+data formats</strong>, both locally and online.</p></li>
+<li><p>R produces <strong>high-quality graphics</strong> suitable for
+publication in journals and on the web.</p></li>
+<li><p>R has a <strong>large and welcoming community</strong>—with
+thousands of daily users who offer help on platforms like <strong>Stack
+Overflow</strong> and the <strong>RStudio Community</strong>.</p></li>
+<li><p>R is <strong>free, open-source, and cross-platform</strong>,
+making it accessible to everyone.</p></li>
 </ul>
 <hr />
 </div>
 <div id="rstudio-a-brief-tour" class="section level1">
-<h1>Rstudio a brief tour</h1>
-<p>Rstudio provides us with a friendly interface to the R statistical
-progrmming language. It consists of four main “Panes”. These can be
-re-sized and moved around to suit how you like to work.</p>
-<p><img src="images/Rstudioataglance.png" alt="Rstudio screenshot" width="90%"></p>
+<h1>RStudio a brief tour</h1>
+<p>RStudio provides a user-friendly interface for the R statistical
+programming language. It consists of four main panes, which can be
+resized and rearranged to suit your workflow.</p>
+<p><img src="images/Rstudioataglance.png" alt="RStudio screenshot" width="90%"></p>
 <div id="editing-pane" class="section level2">
 <h2>Editing pane</h2>
-<p>By default the top left-hand pane is one for creating, editing &amp;
-running R scripts.</p>
-<p><img src="images/Rstudio_scripting.png" alt="Rstudio edit pane screenshot" width="90%"></p>
-<p>A script is an R program that you have written. A good practice is
-for that script to perform only one role in your analysis workflow and
-so you may have several R scripts which you call, in a particular
-sequence, to analyse your data.</p>
-<p>As you will see, a script is basically a text file that contains R
-commands and (ideally) comments to explain what the codes function is
-(as a documentation process).</p>
-<p>As well as R scripts, there are many types of Rstudio document
-including Markdown files which we will use in the teaching of this
-course. These can provide interactive workbooks or pdf and web documents
-to name but a few possible outcomes.</p>
+<p>By default, the <strong>top-left pane</strong> in RStudio is used for
+<strong>creating, editing, and running R scripts</strong>.</p>
+<p><img src="images/Rstudio_scripting.png" alt="RStudio edit pane screenshot" width="90%"></p>
+<p>An R script is a program you write in R. A good practice is to design
+each script to perform a single role in your analysis workflow. As a
+result, you may have multiple scripts that are executed in a specific
+sequence to analyze your data.</p>
+<p>A script is essentially a text file containing R commands and
+(ideally) comments to document its purpose and functionality.</p>
+<p>In addition to R scripts, RStudio supports various document types,
+including R Markdown (.Rmd) files, which we will use in this course.
+These documents can generate interactive workbooks, PDFs, and web-based
+reports, among other formats.</p>
 </div>
 <div id="console" class="section level2">
 <h2>Console</h2>
-<p>Coming down the screen to the bottom left-hand pane we find the
-console window. This is where we can find output produced by running our
-R scripts.</p>
-<p><img src="images/Rstudio_console.png" alt="Rstudio screenshot" width="90%"></p>
-<p>We can also try out snippets of R code here. Those of you who have
-only used graphical interfaces like Windows or MacOS where you click on
-commands using a mouse may find this aspect of R somewhat different. We
-type in commands to R using the command line.</p>
+<p>The bottom-left pane in RStudio contains the console window, where
+output from running R scripts is displayed.</p>
+<p><img src="images/Rstudio_console.png" alt="RStudio screenshot" width="90%"></p>
+<p>You can also use the console to test small snippets of R code. If
+you’re accustomed to graphical interfaces like Windows or macOS, where
+commands are executed with a mouse click, you may find R’s command-line
+approach different. In R, commands are typed directly into the
+console.</p>
 <p>This area can also be used like a calculator. Let’s just type in
 something like <code>23 + 45</code> followed by the return key and see
 what happens. You should get the following:</p>
@@ -626,57 +639,69 @@ steps of 2:</p>
 <pre><code>&gt; 1:36 * 2
  [1]  2  4  6  8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 42 44 46 48 50
 [26] 52 54 56 58 60 62 64 66 68 70 72</code></pre>
-<p>There are other tabs on this pane but we shall not be covering these
-on this course.</p>
+<p>This pane also contains other tabs, but we will not be covering them
+in this course.</p>
 </div>
 <div id="environment" class="section level2">
 <h2>Environment</h2>
-<p>Next we move to the top right-hand corner pane. Here we have even
-more tabs (of which we will only consider two Environment and
-History).</p>
-<p><img src="images/Rstudio_env.png" alt="Rstudio screenshot" width="80%"></p>
-<p>Environment keeps track on R variables which we create (more on those
-later) and their contents. History is like a tally role of all the R
-commands we have entered in our session.</p>
+<p>Next, we move to the top-right pane, which contains several tabs. In
+this course, we will focus on two: Environment and History.</p>
+<p><img src="images/Rstudio_env.png" alt="RStudio screenshot" width="80%"></p>
+<p>The <strong>environment</strong> in R keeps track of the variables
+you create and their contents throughout your session. It stores all the
+objects (such as vectors, data frames, and functions) in your workspace.
+You can list these objects using the <code>ls()</code> function and
+remove them with the <code>rm()</code> function.</p>
+<p><strong>History</strong>, on the other hand, is a log of all the R
+commands you’ve entered during your session. While it doesn’t store the
+objects themselves, it records the sequence of actions you’ve taken. You
+can view your command history with the <code>history()</code> function
+or by navigating through previous commands using the <code>Up</code> and
+<code>Down</code> arrow keys.</p>
 </div>
 <div id="files-plots-help" class="section level2">
 <h2>Files, Plots &amp; Help</h2>
-<p>Our final bottom right-hand pane also has several tabs. The Files tab
-is a file explorer that enable us to move around our directories and
-select which files we wish to work on. We can also change the default
-working directory that Rstudio will use.</p>
-<p><img src="images/Rstudio_filexpl.png" alt="Rstudio screenshot" width="80%"></p>
-<p>The Plots tab is where any graphs that we create in R will appear. We
-can move through them using the arrow buttons and the export button will
-convert them to different graphics formats e.g. for publication in a
-paper or for the web.</p>
-<p>The Packages tab shows which R packages are installed (These expand
-R’s functionallity and again will be covered later) and can also install
-new packages.</p>
-<p>The Help tab is a <em>massively useful</em> tab which enables you to
-search R help index to get help pages on R functions and provide example
-code to help you use them in your R scripts.</p>
+<p>The <strong>bottom right-hand pane</strong> in RStudio also contains
+several tabs. The <strong>Files tab</strong> acts as a file explorer,
+allowing you to navigate through your directories and select the files
+you want to work on. Additionally, you can change the default working
+directory for your R session from this pane, making it easier to manage
+your project files and directories.</p>
+<p><img src="images/Rstudio_filexpl.png" alt="RStudio screenshot" width="80%"></p>
+<p>The <strong>Plots tab</strong> is where any graphs you create in R
+will appear. You can navigate through the plots using the arrow buttons,
+and the <strong>Export button</strong> allows you to convert the plots
+into various graphic formats, such as for publication or use on the
+web.</p>
+<p>The <strong>Packages tab</strong> shows the R packages currently
+installed, which extend R’s functionality (and will be covered in more
+detail later). From here, you can also install new packages.</p>
+<p>The <strong>Help tab</strong> is a <em>massively useful</em> resource
+that lets you search the R help index. It provides access to help pages
+for R functions and often includes example code to assist you in using
+those functions effectively in your R scripts.</p>
 <hr />
 </div>
 </div>
 <div id="our-first-look-at-the-r-language" class="section level1">
 <h1>Our first look at the R language</h1>
-<p>Our overall goal for this course is to give you the ability to import
-your data into R, select a subset of the data most of interest for a
-given analysis, carry out an analysis to summarize these data and create
-visualizations of the data. First though, let us consider <strong>“What
-is Data?”</strong></p>
+<p>The overall goal of this course is to equip you with the skills to
+import data into R, select the most relevant subset for a given
+analysis, conduct an analysis to summarize the data, and create
+visualizations to effectively present your findings.</p>
+<p>First though, let us consider <strong>“What is Data?”</strong></p>
 <p>Data comes in many forms: Numbers (Integers and decimal values) or
 alphabetical (characters or lines of text). Clearly a computer (or R)
 needs a way of representing this wide range of data with it’s diverse
 properties.</p>
 <div id="data-types-in-r" class="section level2">
 <h2>Data types in R</h2>
-<div class="figure">
-<img src="images/r-programming-data-types.png" alt="" />
-<p class="caption">Image source:<a
+<div class="float">
+<img src="images/r-programming-data-types.png"
+alt="Image source:https://www.javatpoint.com/r-data-types" />
+<div class="figcaption">Image source:<a
 href="https://www.javatpoint.com/r-data-types"
-class="uri">https://www.javatpoint.com/r-data-types</a></p>
+class="uri">https://www.javatpoint.com/r-data-types</a></div>
 </div>
 <ul>
 <li><p>R has 6 basic data types</p>
@@ -739,11 +764,12 @@ operators.</p>
 </div>
 <div id="data-structures-in-r" class="section level2">
 <h2>Data structures in R</h2>
-<div class="figure">
-<img src="images/dataStructures.png" alt="" />
-<p class="caption">Image source:<a
+<div class="float">
+<img src="images/dataStructures.png"
+alt="Image source:http://venus.ifca.unican.es/Rintro/dataStruct.html" />
+<div class="figcaption">Image source:<a
 href="http://venus.ifca.unican.es/Rintro/dataStruct.html"
-class="uri">http://venus.ifca.unican.es/Rintro/dataStruct.html</a></p>
+class="uri">http://venus.ifca.unican.es/Rintro/dataStruct.html</a></div>
 </div>
 <ul>
 <li>R has many data structures. These include
@@ -762,11 +788,12 @@ class="uri">http://venus.ifca.unican.es/Rintro/dataStruct.html</a></p>
 <li>All the other data structures built on vectors</li>
 <li><code>Understanding this structure is absolutely essential</code></li>
 </ul>
-<div class="figure">
-<img src="images/Vectors-in-R.jpg" alt="" />
-<p class="caption">Image source:<a
+<div class="float">
+<img src="images/Vectors-in-R.jpg"
+alt="Image source:https://www.geeksforgeeks.org/r-vector/" />
+<div class="figcaption">Image source:<a
 href="https://www.geeksforgeeks.org/r-vector/"
-class="uri">https://www.geeksforgeeks.org/r-vector/</a></p>
+class="uri">https://www.geeksforgeeks.org/r-vector/</a></div>
 </div>
 <pre class="r"><code>x &lt;- 100 # create first vector</code></pre>
 <ul>
@@ -1035,7 +1062,7 @@ class="uri">https://www.r-project.org/help.html</a></li>
 <li>By typing <code>?</code> or <code>help()</code> followed by the name
 of the function in the console, for example to get help with the round
 function, type “?round” in the console</li>
-<li>In Rstudio under the help tab one can search for a given
+<li>In RStudio under the help tab one can search for a given
 function</li>
 <li>On general Google search, for instance “round + r function +
 documentation”</li>
@@ -1047,7 +1074,7 @@ help(round) # equivalent to ?round</code></pre>
 <li>Use <code>args()</code> to view the arguments of a function</li>
 </ul>
 <pre class="r"><code>args(round)</code></pre>
-<pre><code>## function (x, digits = 0) 
+<pre><code>## function (x, digits = 0, ...) 
 ## NULL</code></pre>
 <ul>
 <li>Using the help or the args function, you can see that
