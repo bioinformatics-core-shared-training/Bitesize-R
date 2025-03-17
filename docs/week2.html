@@ -605,21 +605,21 @@ is.list(result) # test if object is a list</code></pre>
 ##  Welch Two Sample t-test
 ## 
 ## data:  sample_1 and sample_2
-## t = -14.384, df = 197.3, p-value &lt; 2.2e-16
+## t = -13.046, df = 197.86, p-value &lt; 2.2e-16
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -2.206992 -1.674792
+##  -2.210272 -1.629802
 ## sample estimates:
 ## mean of x mean of y 
-##  5.115217  7.056109</code></pre>
+##  5.014625  6.934662</code></pre>
 <pre class="r"><code>names(result) # list names of the object</code></pre>
 <pre><code>##  [1] &quot;statistic&quot;   &quot;parameter&quot;   &quot;p.value&quot;     &quot;conf.int&quot;    &quot;estimate&quot;   
 ##  [6] &quot;null.value&quot;  &quot;stderr&quot;      &quot;alternative&quot; &quot;method&quot;      &quot;data.name&quot;</code></pre>
 <pre class="r"><code>result$statistic</code></pre>
 <pre><code>##         t 
-## -14.38392</code></pre>
+## -13.04584</code></pre>
 <pre class="r"><code>result$p.value</code></pre>
-<pre><code>## [1] 1.482264e-32</code></pre>
+<pre><code>## [1] 1.783702e-28</code></pre>
 </div>
 <div id="data-frames" class="section level3">
 <h3>Data frames</h3>
@@ -1007,13 +1007,6 @@ names(airquality)</code></pre>
 <pre><code>## [1] &quot;Ozone&quot;   &quot;Solar.R&quot; &quot;Wind&quot;    &quot;Temp&quot;    &quot;Month&quot;   &quot;Day&quot;</code></pre>
 <pre class="r"><code>colnames(airquality)</code></pre>
 <pre><code>## [1] &quot;Ozone&quot;   &quot;Solar.R&quot; &quot;Wind&quot;    &quot;Temp&quot;    &quot;Month&quot;   &quot;Day&quot;</code></pre>
-<pre class="r"><code># 3 b
-class(airquality[,1])</code></pre>
-<pre><code>## [1] &quot;integer&quot;</code></pre>
-<pre class="r"><code>is.vector(airquality[,1])</code></pre>
-<pre><code>## [1] TRUE</code></pre>
-<pre class="r"><code>is.data.frame(airquality[,1])</code></pre>
-<pre><code>## [1] FALSE</code></pre>
 </details>
 </div>
 <div class="exercise">
@@ -1039,7 +1032,7 @@ results$conf.int</code></pre>
 ## [1] 0.95</code></pre>
 <pre class="r"><code># 1 b
 result$p.value</code></pre>
-<pre><code>## [1] 1.482264e-32</code></pre>
+<pre><code>## [1] 1.783702e-28</code></pre>
 <pre class="r"><code># 1 c
 results$estimate</code></pre>
 <pre><code>##       cor 

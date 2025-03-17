@@ -402,10 +402,6 @@ tail(airquality, n=2)
 # 4 c
 names(airquality)
 colnames(airquality)
-# 3 b
-class(airquality[,1])
-is.vector(airquality[,1])
-is.data.frame(airquality[,1])
 ```
 </details>
 
