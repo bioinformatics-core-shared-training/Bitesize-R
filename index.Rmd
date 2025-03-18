@@ -50,7 +50,7 @@ previously and would like a refresher or to consolidate their skills.
 
 3. [Working with data](week3.html)  -  Reading data into R tabular data
 
-4. [Data visualization with ggplot2]  - A common grammar to create scatter plots, bar charts, boxplots, histograms and line graphs for time series data
+4. [Data visualization with ggplot2](week4.html)  - A common grammar to create scatter plots, bar charts, boxplots, histograms and line graphs for time series data
 
 5. [Data manipulation using dplyr]  - Filtering and modifying tabular data, computing summary values, faceting with ggplot2
 
