@@ -54,6 +54,25 @@ metabric <- read_csv("data/metabric_clinical_and_expression_data.csv")
 metabric
 ```
 
+# ggplot2 grammar
+
+The "gg" in ggplot2 stands for "grammar of graphics". This grammar is a coherent
+system for describing and building graphs.
+
+The basic template is given in the summary box below. This template can be used
+to create any of a wide range of graph types with ggplot2.
+
+```{block type = "rmdblock"}
+**ggplot2 grammar of graphics**
+
+**`ggplot(data = <DATA>) + <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))`**
+
+`ggplot()` creates the plot object.
+
+Layers can be added by adding geoms such as `geom_point()` using the `+`
+operator that ggplot2 has overridden for this purpose.
+```
+
 # Our first ggplot - a scatter plot
 
 First we'll create a simple scatter plot much like the ones we've created in
@@ -187,24 +206,6 @@ Virtually every aspect of the plots we've created can be customized. We will
 learn how to change the colours used as well as other display parameters later
 in the course.
 
-# ggplot2 grammar
-
-The "gg" in ggplot2 stands for "grammar of graphics". This grammar is a coherent
-system for describing and building graphs.
-
-The basic template is given in the summary box below. This template can be used
-to create any of a wide range of graph types with ggplot2.
-
-```{block type = "rmdblock"}
-**ggplot2 grammar of graphics**
-
-**`ggplot(data = <DATA>) + <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))`**
-
-`ggplot()` creates the plot object.
-
-Layers can be added by adding geoms such as `geom_point()` using the `+`
-operator that ggplot2 has overridden for this purpose.
-```
 
 # Another plot type - bar chart
 

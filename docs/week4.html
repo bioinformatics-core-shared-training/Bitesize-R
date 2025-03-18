@@ -13,7 +13,7 @@
 
 <title>Week 4 – Visualizing tabular data with ggplot2</title>
 
-<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -29,14 +29,14 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -343,6 +343,12 @@ div.tocify {
     <li>
       <a href="week5.html">Week 5 - Data manipulation using dplyr</a>
     </li>
+    <li>
+      <a href="week6.html">Week 6 - Grouping and combining data</a>
+    </li>
+    <li>
+      <a href="week7.html">Week 7 - Restructuring data for analysis</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -441,6 +447,31 @@ metabric</code></pre>
 ## #   Nottingham_prognostic_index &lt;dbl&gt;, Cellularity &lt;chr&gt;, …</code></pre>
 </div>
 </div>
+<div id="ggplot2-grammar" class="section level1">
+<h1>ggplot2 grammar</h1>
+<p>The “gg” in ggplot2 stands for “grammar of graphics”. This grammar is
+a coherent system for describing and building graphs.</p>
+<p>The basic template is given in the summary box below. This template
+can be used to create any of a wide range of graph types with
+ggplot2.</p>
+<div class="rmdblock">
+<p>
+<strong>ggplot2 grammar of graphics</strong>
+</p>
+<p>
+<strong><code>ggplot(data = &lt;DATA&gt;) +
+&lt;GEOM_FUNCTION&gt;(mapping = aes(&lt;MAPPINGS&gt;))</code></strong>
+</p>
+<p>
+<code>ggplot()</code> creates the plot object.
+</p>
+<p>
+Layers can be added by adding geoms such as <code>geom_point()</code>
+using the <code>+</code> operator that ggplot2 has overridden for this
+purpose.
+</p>
+</div>
+</div>
 <div id="our-first-ggplot---a-scatter-plot" class="section level1">
 <h1>Our first ggplot - a scatter plot</h1>
 <p>First we’ll create a simple scatter plot much like the ones we’ve
@@ -523,7 +554,8 @@ e.g. shape.</p>
 <p>Here we set the shape based on the 3-gene classifier.</p>
 <pre class="r"><code>ggplot(data = metabric) +
   geom_point(mapping = aes(x = GATA3, y = ESR1, shape = `3-gene_classifier`), size = 0.9)</code></pre>
-<pre><code>## Warning: Removed 204 rows containing missing values (`geom_point()`).</code></pre>
+<pre><code>## Warning: Removed 204 rows containing missing values or values outside the scale range
+## (`geom_point()`).</code></pre>
 <p><img src="week4_files/figure-html/scatter_plot_6-1.png" width="672" /></p>
 <p>Note that some of the patient samples have not been classified and
 ggplot has removed those points with missing values for the 3-gene
@@ -534,7 +566,8 @@ where we want to show which group a data point belongs to in two
 different categorical variables.</p>
 <pre class="r"><code>ggplot(data = metabric) +
   geom_point(mapping = aes(x = GATA3, y = ESR1, colour = PAM50, shape = `3-gene_classifier`), size = 0.9)</code></pre>
-<pre><code>## Warning: Removed 204 rows containing missing values (`geom_point()`).</code></pre>
+<pre><code>## Warning: Removed 204 rows containing missing values or values outside the scale range
+## (`geom_point()`).</code></pre>
 <p><img src="week4_files/figure-html/scatter_plot_7-1.png" width="672" /></p>
 <p>Transparency can be useful when we have a large number of points as
 we can more easily tell when points are overlaid, but like size, it is
@@ -548,31 +581,6 @@ transparency.</p>
 <p>Virtually every aspect of the plots we’ve created can be customized.
 We will learn how to change the colours used as well as other display
 parameters later in the course.</p>
-</div>
-<div id="ggplot2-grammar" class="section level1">
-<h1>ggplot2 grammar</h1>
-<p>The “gg” in ggplot2 stands for “grammar of graphics”. This grammar is
-a coherent system for describing and building graphs.</p>
-<p>The basic template is given in the summary box below. This template
-can be used to create any of a wide range of graph types with
-ggplot2.</p>
-<div class="rmdblock">
-<p>
-<strong>ggplot2 grammar of graphics</strong>
-</p>
-<p>
-<strong><code>ggplot(data = &lt;DATA&gt;) +
-&lt;GEOM_FUNCTION&gt;(mapping = aes(&lt;MAPPINGS&gt;))</code></strong>
-</p>
-<p>
-<code>ggplot()</code> creates the plot object.
-</p>
-<p>
-Layers can be added by adding geoms such as <code>geom_point()</code>
-using the <code>+</code> operator that ggplot2 has overridden for this
-purpose.
-</p>
-</div>
 </div>
 <div id="another-plot-type---bar-chart" class="section level1">
 <h1>Another plot type - bar chart</h1>
@@ -1027,15 +1035,16 @@ going on.</p>
 <pre class="r"><code>typeof(plot)</code></pre>
 <pre><code>## [1] &quot;list&quot;</code></pre>
 <pre class="r"><code>length(plot)</code></pre>
-<pre><code>## [1] 9</code></pre>
+<pre><code>## [1] 11</code></pre>
 <p>The plot object is a list containing 9 elements. It’s actually a
 special type of list.</p>
 <pre class="r"><code>class(plot)</code></pre>
 <pre><code>## [1] &quot;gg&quot;     &quot;ggplot&quot;</code></pre>
 <p>What are the 9 things in the list?</p>
 <pre class="r"><code>names(plot)</code></pre>
-<pre><code>## [1] &quot;data&quot;        &quot;layers&quot;      &quot;scales&quot;      &quot;mapping&quot;     &quot;theme&quot;      
-## [6] &quot;coordinates&quot; &quot;facet&quot;       &quot;plot_env&quot;    &quot;labels&quot;</code></pre>
+<pre><code>##  [1] &quot;data&quot;        &quot;layers&quot;      &quot;scales&quot;      &quot;guides&quot;      &quot;mapping&quot;    
+##  [6] &quot;theme&quot;       &quot;coordinates&quot; &quot;facet&quot;       &quot;plot_env&quot;    &quot;layout&quot;     
+## [11] &quot;labels&quot;</code></pre>
 <p>So far we’ve constructed ggplots from data, layers (geoms) and
 aesthetic mappings but do you notice the labels, scales, facet and theme
 elements? We’ll be looking at how to customize plots later, including
