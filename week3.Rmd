@@ -718,9 +718,12 @@ In this session we have covered the following concepts:
 After reading the data first subset it to retain only cellularity, er_status and her2_status. Thereafter, get rid of rows with missing values in any of the columns.
 
 ```{r}
-#library(tidyverse)
-#metabric <- read_tsv("data/brca_metabric_clinical_data.tsv")
-
+library(tidyverse)
+metabric <- read_tsv("data/brca_metabric_clinical_data.tsv",show_col_types = F)
+library(janitor)
+metabric <- clean_names(metabric)
+metabric_subset <- select(metabric,cellularity,er_status,her2_status)
+metabric_subset <- filter(metabric_subset,!is.na(cellularity),!is.na(er_status),!is.na(her2_status))
 ```
 
 **2. Investigate the subset of long-surviving breast cancer patients that didn't receive chemo or radiotherapy**
@@ -729,9 +732,10 @@ First obtain the subset of patients that received neither chemotherapy or
 radiotherapy and survived for more than 20 years.
 
 ```{r}
-#library(tidyverse)
-#metabric <- read_csv("metabric_clinical_and_expression_data.csv")
-
+library(tidyverse)
+metabric <- read_csv("data/metabric_clinical_and_expression_data.csv",show_col_types = F)
+patients_of_interest <- filter(metabric, Chemotherapy == "NO", Radiotherapy == "NO", Survival_time / 12 > 20)
+patients_of_interest
 ```
 
 Now look at the breakdown of these patients in terms of ER status. Count the
@@ -739,14 +743,16 @@ numbers of ER positive and ER negative patients in this subset. Calculate the
 proportion that are ER positive.
 
 ```{r}
-
+table(patients_of_interest$ER_status)
+mean(patients_of_interest$ER_status == "Positive")
 ```
 
 What does this tell us? Calculate the proportion of ER positive patients in the
 whole cohort by way of a comparison.
 
 ```{r}
-
+table(metabric$ER_status)
+mean(metabric$ER_status == "Positive")
 ```
 
 
@@ -764,3 +770,12 @@ that's not the case, you will have to install it separately.
 
 If you don't have an Excel spreadsheet to hand, you can use the clinical
 annotation data for the NCI-60 cell line data set (https://bioinformatics-core-shared-training.github.io/Bitesize-R/data/cellline_nci60_clinical_data.xlsx).
+
+```{r}
+library(readxl)
+nci60 <- read_excel("data/cellline_nci60_clinical_data.xlsx", na = "NA")
+nci60
+summary(nci60)
+table(nci60$`Cancer Type`)
+plot(nci60$`Mutation Count`, nci60$`Fraction Genome Altered`)
+```

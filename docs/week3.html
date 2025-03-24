@@ -440,8 +440,8 @@ packages all at once, as follows:</p>
 ## ✔ dplyr     1.1.4     ✔ readr     2.1.5
 ## ✔ forcats   1.0.0     ✔ stringr   1.5.1
 ## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
-## ✔ lubridate 1.9.3     ✔ tidyr     1.3.1
-## ✔ purrr     1.0.2     
+## ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+## ✔ purrr     1.0.4     
 ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()
@@ -1325,19 +1325,57 @@ cellularity and positive ER and HER2 status?</strong></p>
 <p>After reading the data first subset it to retain only cellularity,
 er_status and her2_status. Thereafter, get rid of rows with missing
 values in any of the columns.</p>
-<pre class="r"><code>#library(tidyverse)
-#metabric &lt;- read_tsv(&quot;data/brca_metabric_clinical_data.tsv&quot;)</code></pre>
+<pre class="r"><code>library(tidyverse)
+metabric &lt;- read_tsv(&quot;data/brca_metabric_clinical_data.tsv&quot;,show_col_types = F)
+library(janitor)
+metabric &lt;- clean_names(metabric)
+metabric_subset &lt;- select(metabric,cellularity,er_status,her2_status)
+metabric_subset &lt;- filter(metabric_subset,!is.na(cellularity),!is.na(er_status),!is.na(her2_status))</code></pre>
 <p><strong>2. Investigate the subset of long-surviving breast cancer
 patients that didn’t receive chemo or radiotherapy</strong></p>
 <p>First obtain the subset of patients that received neither
 chemotherapy or radiotherapy and survived for more than 20 years.</p>
-<pre class="r"><code>#library(tidyverse)
-#metabric &lt;- read_csv(&quot;metabric_clinical_and_expression_data.csv&quot;)</code></pre>
+<pre class="r"><code>library(tidyverse)
+metabric &lt;- read_csv(&quot;data/metabric_clinical_and_expression_data.csv&quot;,show_col_types = F)
+patients_of_interest &lt;- filter(metabric, Chemotherapy == &quot;NO&quot;, Radiotherapy == &quot;NO&quot;, Survival_time / 12 &gt; 20)
+patients_of_interest</code></pre>
+<pre><code>## # A tibble: 70 × 32
+##    Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status Vital_status
+##    &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;           &lt;chr&gt;       
+##  1 MB-0270         1             30.0          337. LIVING          Living      
+##  2 MB-2517         2             60.3          268. DECEASED        Died of Oth…
+##  3 MB-2610         2             59.0          281. LIVING          Living      
+##  4 MB-2763         2             70.3          276. LIVING          Living      
+##  5 MB-2770         2             60.3          274. LIVING          Living      
+##  6 MB-2793         2             67.6          267. LIVING          Living      
+##  7 MB-2797         2             50.1          253. LIVING          Living      
+##  8 MB-2819         2             62.0          271. LIVING          Living      
+##  9 MB-2838         2             67.1          270. LIVING          Living      
+## 10 MB-2840         2             60.5          269  LIVING          Living      
+## # ℹ 60 more rows
+## # ℹ 26 more variables: Chemotherapy &lt;chr&gt;, Radiotherapy &lt;chr&gt;,
+## #   Tumour_size &lt;dbl&gt;, Tumour_stage &lt;dbl&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
+## #   Lymph_nodes_examined_positive &lt;dbl&gt;, Lymph_node_status &lt;dbl&gt;,
+## #   Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;, PR_status &lt;chr&gt;, HER2_status &lt;chr&gt;,
+## #   HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;, `3-gene_classifier` &lt;chr&gt;,
+## #   Nottingham_prognostic_index &lt;dbl&gt;, Cellularity &lt;chr&gt;, …</code></pre>
 <p>Now look at the breakdown of these patients in terms of ER status.
 Count the numbers of ER positive and ER negative patients in this
 subset. Calculate the proportion that are ER positive.</p>
+<pre class="r"><code>table(patients_of_interest$ER_status)</code></pre>
+<pre><code>## 
+## Negative Positive 
+##        8       62</code></pre>
+<pre class="r"><code>mean(patients_of_interest$ER_status == &quot;Positive&quot;)</code></pre>
+<pre><code>## [1] 0.8857143</code></pre>
 <p>What does this tell us? Calculate the proportion of ER positive
 patients in the whole cohort by way of a comparison.</p>
+<pre class="r"><code>table(metabric$ER_status)</code></pre>
+<pre><code>## 
+## Negative Positive 
+##      445     1459</code></pre>
+<pre class="r"><code>mean(metabric$ER_status == &quot;Positive&quot;)</code></pre>
+<pre><code>## [1] 0.7662815</code></pre>
 <p><strong>3. Read into R one of your own Excel spreadsheets and explore
 the data using <code>summary()</code>, <code>table()</code> and/or
 <code>plot()</code></strong></p>
@@ -1354,6 +1392,88 @@ load this separately.</p>
 clinical annotation data for the NCI-60 cell line data set (<a
 href="https://bioinformatics-core-shared-training.github.io/Bitesize-R/data/cellline_nci60_clinical_data.xlsx"
 class="uri">https://bioinformatics-core-shared-training.github.io/Bitesize-R/data/cellline_nci60_clinical_data.xlsx</a>).</p>
+<pre class="r"><code>library(readxl)
+nci60 &lt;- read_excel(&quot;data/cellline_nci60_clinical_data.xlsx&quot;, na = &quot;NA&quot;)
+nci60</code></pre>
+<pre><code>## # A tibble: 67 × 20
+##    `Study ID`     `Patient ID` `Sample ID` `Diagnosis Age` `Cancer Type`      
+##    &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;                 &lt;dbl&gt; &lt;chr&gt;              
+##  1 cellline_nci60 786_0        786_0                    58 Renal              
+##  2 cellline_nci60 A498         A498                     52 Renal              
+##  3 cellline_nci60 A549         A549                     58 Non-Small Cell Lung
+##  4 cellline_nci60 ACHN         ACHN                     22 Renal              
+##  5 cellline_nci60 BT_549       BT_549                   72 Breast             
+##  6 cellline_nci60 CAKI_1       CAKI_1                   49 Renal              
+##  7 cellline_nci60 CCRF_CEM     CCRF_CEM                  4 Myeloid Neoplasm   
+##  8 cellline_nci60 COLO205      COLO205                  70 Colon              
+##  9 cellline_nci60 CSF_268      CSF_268                  NA &lt;NA&gt;               
+## 10 cellline_nci60 CSF_295      CSF_295                  NA &lt;NA&gt;               
+## # ℹ 57 more rows
+## # ℹ 15 more variables: `Cancer Type Detailed` &lt;chr&gt;,
+## #   `Category of Sample` &lt;chr&gt;, `Doubling Time (hrs)` &lt;dbl&gt;, Epithelial &lt;chr&gt;,
+## #   `Fraction Genome Altered` &lt;dbl&gt;, `Tumor Other Histologic Subtype` &lt;chr&gt;,
+## #   MDR &lt;dbl&gt;, `Mutation Count` &lt;dbl&gt;, `Oncotree Code` &lt;chr&gt;, P53 &lt;chr&gt;,
+## #   Ploidy &lt;chr&gt;, `Prior Treatment` &lt;chr&gt;,
+## #   `Number of Samples Per Patient` &lt;dbl&gt;, `Sample Type` &lt;chr&gt;, Sex &lt;chr&gt;</code></pre>
+<pre class="r"><code>summary(nci60)</code></pre>
+<pre><code>##    Study ID          Patient ID         Sample ID         Diagnosis Age  
+##  Length:67          Length:67          Length:67          Min.   : 4.00  
+##  Class :character   Class :character   Class :character   1st Qu.:43.00  
+##  Mode  :character   Mode  :character   Mode  :character   Median :52.00  
+##                                                           Mean   :49.82  
+##                                                           3rd Qu.:62.00  
+##                                                           Max.   :75.00  
+##                                                           NA&#39;s   :22     
+##  Cancer Type        Cancer Type Detailed Category of Sample Doubling Time (hrs)
+##  Length:67          Length:67            Length:67          Min.   :17.40      
+##  Class :character   Class :character     Class :character   1st Qu.:25.70      
+##  Mode  :character   Mode  :character     Mode  :character   Median :32.70      
+##                                                             Mean   :35.24      
+##                                                             3rd Qu.:41.75      
+##                                                             Max.   :79.50      
+##                                                             NA&#39;s   :7          
+##   Epithelial        Fraction Genome Altered Tumor Other Histologic Subtype
+##  Length:67          Min.   :0.0117          Length:67                     
+##  Class :character   1st Qu.:0.1815          Class :character              
+##  Mode  :character   Median :0.2665          Mode  :character              
+##                     Mean   :0.2729                                        
+##                     3rd Qu.:0.3563                                        
+##                     Max.   :0.7609                                        
+##                     NA&#39;s   :7                                             
+##       MDR        Mutation Count   Oncotree Code          P53           
+##  Min.   :-86.0   Min.   : 117.0   Length:67          Length:67         
+##  1st Qu.: -4.0   1st Qu.: 189.5   Class :character   Class :character  
+##  Median : 11.0   Median : 276.0   Mode  :character   Mode  :character  
+##  Mean   : 24.1   Mean   : 567.7                                        
+##  3rd Qu.: 23.5   3rd Qu.: 439.5                                        
+##  Max.   :414.0   Max.   :5551.0                                        
+##  NA&#39;s   :8       NA&#39;s   :7                                             
+##     Ploidy          Prior Treatment    Number of Samples Per Patient
+##  Length:67          Length:67          Min.   :1                    
+##  Class :character   Class :character   1st Qu.:1                    
+##  Mode  :character   Mode  :character   Median :1                    
+##                                        Mean   :1                    
+##                                        3rd Qu.:1                    
+##                                        Max.   :1                    
+##                                                                     
+##  Sample Type            Sex           
+##  Length:67          Length:67         
+##  Class :character   Class :character  
+##  Mode  :character   Mode  :character  
+##                                       
+##                                       
+##                                       
+## </code></pre>
+<pre class="r"><code>table(nci60$`Cancer Type`)</code></pre>
+<pre><code>## 
+##              Breast                 CNS               Colon            Melanoma 
+##                   5                   6                   7                  10 
+##    Myeloid Neoplasm Non-Small Cell Lung             Ovarian            Prostate 
+##                   6                   9                   7                   2 
+##               Renal 
+##                   8</code></pre>
+<pre class="r"><code>plot(nci60$`Mutation Count`, nci60$`Fraction Genome Altered`)</code></pre>
+<p><img src="week3_files/figure-html/unnamed-chunk-56-1.png" width="672" /></p>
 </div>
 </div>
 
