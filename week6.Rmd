@@ -1,13 +1,16 @@
 ---
-title: "Week 6 -- Grouping and combining data"
+title: "Session 6 -- Grouping and combining data"
 ---
 
 > #### Learning objectives
 >
-> * Use `group_by()` with `summarise()` to compute summary values for groups of observations
+> * Use `group_by()` with `summarise()` to compute summary values for groups of
+>   observations
 > * Use `count()` to count the numbers of observations within categories
-> * Combine data from two tables based on a common identifier (`join` operations)
-> * Customize plots created using ggplot2 by changing labels, scales and colours
+> * Combine data from two tables based on a common identifier (`join`
+>   operations)
+> * Customize plots created using ggplot2 by changing labels, scales and
+>   colours
 
 
 
@@ -15,11 +18,11 @@ title: "Week 6 -- Grouping and combining data"
 
 In this session, we'll look at some more useful functions provided by the
 **dplyr** package, the 'workhorse' in the tidyverse family for manipulating
-tabular data. Continuing from last week, we'll see how we can summarise data
-for groups of observations within different categories. We'll also show how
-dplyr allows us to combine data for the same observational unit, e.g. person
-or date, that comes from different sources and is read into R in different
-tables.
+tabular data. Continuing from the last session, we'll see how we can summarise
+data for groups of observations within different categories. We'll also show
+how dplyr allows us to combine data for the same observational unit, e.g.
+person or date, that comes from different sources and is read into R in
+different tables.
 
 We'll also look at how to customize the plots we create using **ggplot2**, in
 particular how we can add or change titles and labels, how we can adjust the
@@ -39,7 +42,6 @@ customization of plots, we'll again use the METABRIC data set.
 metabric <- read_csv("data/metabric_clinical_and_expression_data.csv")
 metabric
 ```
-
 
 # Grouping observations
 
@@ -62,17 +64,32 @@ filter the data frame to contain only the rows for a given ER status, then apply
 the `summarise()` function to compute the mean expression, but that would be
 somewhat cumbersome. Even more so if we chose to do this for a categorical
 variable with more than two states, e.g. for each of the integrative clusters.
-Fortunately, the **`group_by()`** function allows this to be done in one simple
-step.
+Fortunately, the **`group_by()`** function and **.by** argument to summarise
+allow this to be done in one simple step.
 
 ```{r}
 metabric %>%
-  group_by(ER_status) %>%
-  summarise(mean(ESR1))
+    group_by(ER_status) %>%
+    summarise(mean(ESR1))
 ```
+
+or
+
+```{r}
+metabric %>%
+    summarise(mean(ESR1), .by = ER_status)
+```
+
+The following schematic contains another example using a simplified subset of
+the METABRIC tumour samples to show what's going on.
+
+![](images/group_and_summarise.png)
+
 
 We get an additional column in our output for the categorical variable,
 `ER_status`, and a row for each category.
+
+When we group by only one column there is no difference between the two methods.
 
 Incidentally, we should expect this result of ER-positive tumours having a
 higher expression of ESR1 on average than ER-negative tumours. Simple summaries
@@ -82,31 +99,70 @@ log~2~scale so ER-positive breast cancers express ESR1 at a level that is
 approximately 20 times greater, on average, than that of ER-negative tumours.
 
 ```{r}
-2 ** (10.6 - 6.21)  # equivalent to (2 ** 10.6) / (2 ** 6.21)
+2 ^ (10.6 - 6.21)  # equivalent to (2 ^ 10.6) / (2 ^ 6.21)
 ```
 
-Let's have a look at how ESR1 expression varies between the integrative cluster
-subtypes defined by the METABRIC study.
+We can group by more than one column. When we do this there are some
+differences by between using **group_by** or **.by**.
+
+Let's say we want to look at ERBB2 expression in ER positive and negative, but
+further divided by the cancer type.
 
 ```{r}
 metabric %>%
-  group_by(Integrative_cluster) %>%
-  summarise(ESR1 = mean(ESR1))
+    group_by(ER_status, Cancer_type) %>%
+    summarise(mean(ERBB2))
 ```
 
-The following schematic contains another example using a simplified subset of
-the METABRIC tumour samples to show what's going on.
-
-![](images/group_and_summarise.png)
-
-As we saw last week, we can summarize multiple observations, e.g. the mean
-expression for other genes of interest, with `summarise_at()`, this time using
-the PAM50 classification to define the groups.
+You can see that the tibble is still grouped by "ER\_status", this means any
+subsequent operations will be carried out within the groupings based on
+"ER\_status". Perhaps, after summarising, we want to find which group has the
+maximum mean ERBB2 expression. We can use the dplyr function **top_n** to get
+the top result.
 
 ```{r}
 metabric %>%
-  group_by(PAM50) %>%
-  summarise_at(vars(ESR1, PGR, ERBB2), mean)
+    group_by(ER_status, Cancer_type) %>%
+    summarise(ERBB2_mean = mean(ERBB2)) %>%
+    top_n(n = 1)
+```
+
+This gives us the top value for ER positive and ER negative groups respectively.
+
+If we don't want the grouping to continue to be applied we need to use
+**ungroup()**.
+
+```{r}
+metabric %>%
+    group_by(ER_status, Cancer_type) %>%
+    summarise(ERBB2_mean = mean(ERBB2)) %>%
+    ungroup() %>%
+    top_n(n = 1)
+```
+
+If instead we use **.by** to do the grouping, you will see that the grouping is
+dropped after the summarise operation.
+
+```{r}
+metabric %>%
+    summarise(ERBB2_mean = mean(ERBB2), .by = c(ER_status, Cancer_type))
+```
+
+You should also notice, that the tibble returned by **group_by** was sorted
+by our grouping columns, the tibble returned when using **.by** is not
+sorted. In general, using **.by** is simpler as you don't have to worry about
+doing the **ungroup()** afterwards.
+
+Note: The **.by** and an equivalent **by** (no dot) are available in other
+dplyr verbs, such as `mutate()` and `filter()`, but not all, such as `top_n()`.
+
+As we saw in the previous session, we can summarize multiple observations, e.g.
+the mean expression for other genes of interest, with `summarise(across())`,
+this time using the PAM50 classification to define the groups.
+
+```{r}
+metabric %>%
+    summarise(across(c(ESR1, PGR, ERBB2), mean), .by = PAM50)
 ```
 
 We can also refine our groups by using more than one categorical variable. Let's
@@ -114,8 +170,7 @@ subdivide the PAM50 groups by HER2 status to illustrate this.
 
 ```{r}
 metabric %>%
-  group_by(PAM50, HER2_status) %>%
-  summarise(ESR1_mean = mean(ESR1))
+    summarise(across(c(ESR1, PGR, ERBB2), mean), .by = c(PAM50, HER2_status))
 ```
 
 It can be quite useful to know how many observations are within each group. We
@@ -124,8 +179,7 @@ than computing a summary value from one of the columns.
 
 ```{r}
 metabric %>%
-  group_by(PAM50, HER2_status) %>%
-  summarise(N = n(), ESR1_mean = mean(ESR1))
+    summarise(N = n(), ESR1_mean = mean(ESR1), .by = c(PAM50, HER2_status))
 ```
 
 ## Counts
@@ -158,15 +212,13 @@ The count column is named 'n' by default but you can change this.
 count(metabric, PAM50, HER2_status, name = "Samples")
 ```
 
-`count()` is equivalent to grouping observations with `group_by()` and calling
-`summarize()` using the special `n()` function to count the number of rows. So
-the above statement could have been written in a more long-winded way as
-follows.
+`count()` is equivalent to grouping observations calling `summarize()` using
+the special `n()` function to count the number of rows. So the above statement
+could have been written in a more long-winded way as follows.
 
 ```{r eval = FALSE}
 metabric %>%
-  group_by(PAM50, HER2_status) %>%
-  summarize(Samples = n())
+    summarize(Samples = n(), .by = c(PAM50, HER2_status))
 ```
 
 Summarizing with `n()` is useful when showing the number of observations in a
@@ -182,8 +234,9 @@ of ER-negative and ER-positive tumours.
 
 ```{r}
 metabric %>%
-  group_by(ER_status) %>%
-  summarize(N = n(), `Average tumour size` = mean(Tumour_size))
+    summarize(N = n(),
+              `Average tumour size` = mean(Tumour_size),
+              .by = ER_status)
 ```
 
 The `mean()` function, along with many similar summarization functions, has an
@@ -192,8 +245,9 @@ the calculation.
 
 ```{r}
 metabric %>%
-  group_by(ER_status) %>%
-  summarize(N = n(), `Average tumour size` = mean(Tumour_size, na.rm = TRUE))
+    summarize(N = n(),
+              `Average tumour size` = mean(Tumour_size, na.rm = TRUE),
+              .by = ER_status)
 ```
 
 An alternative would be to filter out the observations with missing values but
@@ -202,9 +256,10 @@ meaning, which may or may not be what we actually want.
 
 ```{r}
 metabric %>%
-  filter(!is.na(Tumour_size)) %>%
-  group_by(ER_status) %>%
-  summarize(N = n(), `Average tumour size` = mean(Tumour_size))
+    filter(!is.na(Tumour_size)) %>%
+    summarize(N = n(),
+              `Average tumour size` = mean(Tumour_size),
+              .by = ER_status)
 ```
 
 ## Counts and proportions
@@ -220,8 +275,10 @@ number of missing values.
 
 ```{r}
 metabric %>%
-  group_by(ER_status) %>%
-  summarize(N = n(), Missing = sum(is.na(Tumour_size)), `Average tumour size` = mean(Tumour_size, na.rm = TRUE))
+    summarize(N = n(),
+              Missing = sum(is.na(Tumour_size)),
+              `Average tumour size` = mean(Tumour_size, na.rm = TRUE),
+              .by = ER_status)
 ```
 
 Why does this work? Well, the `is.na()` function takes a vector and sees which
@@ -252,8 +309,10 @@ recorded tumour size in each of the ER-negative and ER-positive groups.
 
 ```{r}
 metabric %>%
-  group_by(ER_status) %>%
-  summarize(N = n(), `Missing tumour size` = sum(is.na(Tumour_size)), `Proportion missing` = mean(is.na(Tumour_size)))
+    summarize(N = n(),
+              `Missing tumour size` = sum(is.na(Tumour_size)),
+              `Proportion missing` = mean(is.na(Tumour_size)),
+              .by = ER_status)
 ```
 
 We can use `sum()` and `mean()` for any condition that returns a logical vector.
@@ -263,29 +322,35 @@ groups.
 
 ```{r}
 metabric %>%
-  filter(Survival_status == "DECEASED") %>%
-  group_by(ER_status) %>%
-  summarise(N = n(), N_long_survival = sum(Survival_time > 120), Proportion_long_survival = mean(Survival_time > 120))
+    filter(Survival_status == "DECEASED") %>%
+    summarise(N = n(),
+              N_long_survival = sum(Survival_time > 120),
+              Proportion_long_survival = mean(Survival_time > 120),
+              .by = ER_status)
 ```
 
 ## Selecting or counting distinct things
 
 There are occassions when we want to count the number of distinct values in a
-variable or a combination of variables. In this week's assignment, we introduce
-another set of data from the METABRIC study which contains details of the
-mutations detected by targeted sequencing of a panel of 173 genes. We'll read
-this data into R now as this provides a good example of having multiple
-observations in different rows for a single observational unit, in this case
-several mutations detected in each tumour sample.
+variable or a combination of variables. Here we introduce another set of data
+from the METABRIC study which contains details of the mutations detected by
+targeted sequencing of a panel of 173 genes. We'll read this data into R now as
+this provides a good example of having multiple observations in different rows
+for a single observational unit, in this case several mutations detected in
+each tumour sample.
 
 
-```{r message = FALSE}
-# download metabric mutation data
-download.file(url="https://bioinformatics-core-shared-training.github.io/Bitesize-R/data/metabric_mutations.csv",destfile = "data/metabric_mutations.csv")
-```
 ```{r message = FALSE}
 mutations <- read_csv("data/metabric_mutations.csv")
-select(mutations, Patient_ID, Chromosome, Position = Start_Position, Ref = Reference_Allele, Alt = Tumor_Seq_Allele1, Type = Variant_Type, Gene)
+
+select(mutations,
+       Patient_ID,
+       Chromosome,
+       Position = Start_Position,
+       Ref = Reference_Allele,
+       Alt = Tumor_Seq_Allele1,
+       Type = Variant_Type,
+       Gene)
 ```
 
 We can see from just these few rows that each patient sample has multiple
@@ -294,43 +359,52 @@ a sample, as can be seen in the first two rows at the top of the table above.
 
 If we want to count the number of patients in which mutations were detected we
 could select the distinct set of patient identifiers using the **`distinct()`**
-function.
+function and then count the number of rows left. Distinct reduces the table to
+ony contain one row for each value of the column (or combination of columns)
+provided:
 
 ```{r}
 mutations %>%
-  distinct(Patient_ID) %>%
-  nrow()
+    distinct(Patient_ID) %>%
+    nrow()
 ```
 
-Similarly, we could select the distinct set of mutated genes for each patient
-as follows.
+However, if we want to count the number of mutations per a patient we can
+use the dplyr function **`count()`**:
 
 ```{r}
-mutations %>%
-  distinct(Patient_ID, Gene)
+count(mutations, Patient_ID)
 ```
 
-This has reduced the number of rows as only distinct combinations of patient
-and gene are retained. This would be necessary if we wanted to count the number
-of patients that have mutations in each gene rather than the number of mutations
-for that gene regardless of the patient.
+Similarly if wanted to count the number of mutations detected in each gene:
 
 ```{r}
-# number of mutations for each gene
 count(mutations, Gene)
 ```
 
+What if we want to count the number of patients in which a mutation is seen for
+each gene. First, we need to use **`distinct()`** to reduce the table to just
+one entry per gene for each patient (one patient may have multiple mutations in
+a single gene) and the use **`count()`** to count the number of times we see
+each each.
+
 ```{r}
-# number of tumour samples in which each gene is mutated
 mutations %>%
-  distinct(Patient_ID, Gene) %>%
-  count(Gene)
+    distinct(Patient_ID, Gene) %>%
+    count(Gene)
 ```
 
 The genes that differ in these two tables are those that have more than one
 mutation within a patient tumour sample.
 
+We can also use count on combinations of columns, for example we may want to
+know how many mutations each patient has on each chromosome. To this we simply
+provide **`count()`** with both columns:
 
+```{r}
+mutations %>%
+    count(Patient_ID, Chromosome)
+```
 
 # Joining data
 
@@ -446,11 +520,13 @@ You may be wondering what happens if there are multiple rows in one of both of
 the two tables for the thing that is being joined, for example what would happen
 if our second table had two entries for instruments that Paul plays.
 
+Let's add an extra intrument for Paul and see what happens when we join the two
+tables. We'll use the `bind_rows()` function to add a row to the `band_instruments`
+tibble.
+
 ```{r}
-band_instruments3 <- tibble(
-  name =  c("John",   "Paul", "Paul",   "Keith"),
-  plays = c("guitar", "bass", "guitar", "guitar")
-)
+extra_instrument <- tibble(name = "Paul", plays = "guitar")
+band_instruments3 <- bind_rows(band_instruments, extra_instrument) 
 band_instruments3
 left_join(band_members, band_instruments3, by = "name")
 ```
@@ -461,10 +537,8 @@ Let's add an entry for Paul being in a second band and see what happens then
 when we combine the two tables, each with two entries for Paul.
 
 ```{r}
-band_members3 <- tibble(
-  name = c("Mick",   "John",    "Paul",    "Paul"),
-  band = c("Stones", "Beatles", "Beatles", "Wings")
-)
+extra_band <- tibble(name = "Paul", band = "Wings")
+band_members3 <- bind_rows(band_members, extra_band)
 band_members3
 left_join(band_members3, band_instruments3, by = "name")
 ```
@@ -477,17 +551,33 @@ Sometimes the observations being combined are identified by multiple columns,
 for example, a forename and a surname. We can specify a vector of column names
 to be used in the join operation.
 
+Let's add surnames and an additional band member to the `band_members` and
+`band_instruments` tables and then join the two tables based on both forename
+and surname. We'll also use `rename` to change the column name `name` to
+`forename`.
+
 ```{r}
-band_members4 <- tibble(
-  forename = c("Mick",   "John",    "Paul",      "Mick",  "John"),
-  surname =  c("Jagger", "Lennon",  "McCartney", "Avory", "Squire"),
-  band =     c("Stones", "Beatles", "Beatles",   "Kinks", "Roses")
-)
-band_instruments4 <- tibble(
-  forename = c("John",   "Paul",      "Keith",    "Mick",  "John"),
-  surname =  c("Lennon", "McCartney", "Richards", "Avory", "Squire"),
-  plays =    c("guitar", "bass",      "guitar",   "drums", "guitar")
-)
+extra_musician <- tibble(forename = "Paul",
+                         surname = "Weller",
+                         band = "The Jam")
+band_members4 <- band_members %>%
+    rename(forename = name) %>%
+    mutate(surname = c("Jagger", "Lennon", "McCartney")) %>%
+    bind_rows(extra_musician) %>%
+    select(forename, surname, band)
+
+extra_instrument <- tibble(forename = "Paul",
+                           surname = "Weller",
+                           plays = "guitar")
+band_instruments4 <- band_instruments %>%
+    rename(forename = name) %>%
+    mutate(surname = c("Lennon", "McCartney", "Richards")) %>%
+    bind_rows(extra_instrument) %>%
+    select(forename, surname, plays)
+
+band_members4
+band_instruments4
+
 full_join(band_members4, band_instruments4, by = c("forename", "surname"))
 ```
 
@@ -499,41 +589,15 @@ even contain different data but happen to have the same name. In such cases
 dplyr joins add a suffix to each column in the combined table.
 
 ```{r}
-band_members5 <- tibble(
-  name = c("John", "Paul", "Ringo", "George", "Mick"),
-  birth_year = c(1940, 1942, 1940, 1943, 1943),
-  band = c("Beatles", "Beatles", "Beatles", "Beatles", "Stones")
-)
-band_instruments5 <- tibble(
-  name = c("John", "Paul", "Ringo", "George"),
-  birth_year = c(1940, 1942, 1940, 1943),
-  instrument = c("guitar", "bass", "drums", "guitar")
-)
+band_members5 <- band_members %>%
+    mutate(birth_year = c(1943, 1940, 1942))
+band_instruments5 <- band_instruments %>%
+    mutate(birth_year = c(1940, 1942, 1943))
 left_join(band_members5, band_instruments5, by = "name")
 ```
 
 It is advisable to rename or remove the duplicated columns that aren't used for
 joining.
-
-## Filtering joins
-
-A variation on the join operations we've considered are `semi_join()` and
-`anti_join()` that filter the rows in one table based on matches or lack of
-matches to rows in another table.
-
-`semi_join()` returns all rows from the first table where there are matches
-in the other table.
-
-```{r}
-semi_join(band_members, band_instruments, by = "name")
-```
-
-`anti_join()` returns all rows where there is no match in the other table, i.e.
-those that are unique to the first table.
-
-```{r}
-anti_join(band_members, band_instruments, by = "name")
-```
 
 ## A real example: joining the METABRIC clinical and mRNA expression data
 
@@ -545,11 +609,6 @@ We first read the clinical data into R and then just select a small number of
 columns to make it easier to see what is going on when combining the data.
 
 ```{r message = FALSE}
-# download metabric clinical data
-download.file(url="https://bioinformatics-core-shared-training.github.io/Bitesize-R/data/metabric_clinical_data.csv",destfile = "data/metabric_clinical_data.csv")
-```
-
-```{r message = FALSE}
 clinical_data <- read_csv("data/metabric_clinical_data.csv")
 clinical_data <- select(clinical_data, Patient_ID, ER_status, PAM50)
 clinical_data
@@ -559,11 +618,7 @@ We then read in the mRNA expression data that was downloaded separately from
 [cBioPortal](https://www.cbioportal.org/study/summary?id=brca_metabric).
 
 
-```{r message = FALSE}
-download.file(url="https://bioinformatics-core-shared-training.github.io/Bitesize-R/data/metabric_mrna_expression.txt",destfile = "data/metabric_mrna_expression.txt")
-
-```
-```{r message = FALSE}
+```{r loadmRNA, message = FALSE}
 mrna_expression_data <- read_tsv("data/metabric_mrna_expression.txt")
 mrna_expression_data
 ```
@@ -573,18 +628,20 @@ into a single data frame using an `inner_join()`. Our resulting table will only
 contain entries for the patients for which expression data are available.
 
 ```{r}
-combined_data <- inner_join(clinical_data, mrna_expression_data, by = c("Patient_ID" = "SAMPLE_ID"))
+combined_data <- inner_join(clinical_data,
+                            mrna_expression_data,
+                            by = c("Patient_ID" = "SAMPLE_ID"))
 combined_data
 ```
 
-Having combined the data, we can carry out exploratory data analysis using 
+Having combined the data, we can carry out exploratory data analysis using
 elements from both data sets.
 
 ```{r box_plot_1}
 combined_data %>%
-  filter(!is.na(PAM50), !is.na(ESR1)) %>%
-  ggplot(mapping = aes(x = PAM50, y = ESR1, colour = PAM50)) +
-  geom_boxplot(show.legend = FALSE)
+    filter(!is.na(PAM50), !is.na(ESR1)) %>%
+    ggplot(mapping = aes(x = PAM50, y = ESR1, colour = PAM50)) +
+    geom_boxplot(show.legend = FALSE)
 ```
 
 
@@ -601,17 +658,14 @@ Adding titles and subtitles to a plot and changing the x- and y-axis labels is
 very straightforward using the `labs()` function.
 
 ```{r scatter_plot_1}
-plot <- ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
-  geom_point(size = 0.6, alpha = 0.5) +
-  geom_smooth(method = "lm") +
-  labs(
-    title = "mRNA expression in the METABRIC breast cancer data set",
-    subtitle = "GATA3 and ESR1 mRNA expression measured using Illumina HT-12 bead arrays",
-    x = "log2 GATA3 expression",
-    y = "log2 ESR1 expression",
-    colour = "ER status"
-  )
-plot
+ggplot(metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
+    geom_point(size = 0.6, alpha = 0.5) +
+    geom_smooth(method = "lm") +
+    labs(title = "mRNA expression in the METABRIC breast cancer data set",
+         subtitle = "Expression measured with Illumina bead arrays",
+         x = "log2 GATA3 expression",
+         y = "log2 ESR1 expression",
+         colour = "ER status")
 ```
 
 The labels are another component of the plot object that we've constructed,
@@ -631,36 +685,13 @@ the label for the colour aesthetic.
 Take a look at the x and y scales in the above plot. ggplot2 has chosen the x
 and y scales and where to put breaks and ticks.
 
-Let's have a look at the elements of the list object we created that specifies
-how the plot should be displayed.
-
-```{r}
-names(plot)
-```
-
-One of the components of the plot is called `scales`. ggplot2 automatically
-adds default scales behind the scenes equivalent to the following:
-
-```{r eval = FALSE}
-plot <- ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
-  geom_point(size = 0.6, alpha = 0.5) +
-  geom_smooth(method = "lm") +
-  scale_x_continuous() +
-  scale_y_continuous() +
-  scale_colour_discrete()
-```
-
-Note that we have three aesthetics and ggplot2 adds a scale for each.
-
-```{r}
-plot$mapping
-```
-
 The x and y variables (`GATA3` and `ESR1`) are continuous so ggplot2 adds a
 continuous scale for each. `ER_status` is a discrete variable in this case so
 ggplot2 adds a discrete scale for colour.
 
-Generalizing, the scales that are required follow the naming scheme:
+In addition to *geom_XXXX* layers for different geometries, we can also add use
+scale layers to modify the scales to our liking. The general format for the
+scale names is:
 
 ```
 scale_<NAME_OF_AESTHETIC>_<NAME_OF_SCALE>
@@ -673,10 +704,11 @@ First we'll change the breaks, i.e. where ggplot2 puts ticks and numeric
 labels, on the y axis.
 
 ```{r scatter_plot_2}
-ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
-  geom_point(size = 0.6, alpha = 0.5) +
-  geom_smooth(method = "lm") +
-  scale_y_continuous(breaks = seq(5, 15, by = 2.5))
+ggplot(data = metabric,
+       mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
+    geom_point(size = 0.6, alpha = 0.5) +
+    geom_smooth(method = "lm") +
+    scale_y_continuous(breaks = seq(5, 15, by = 2.5))
 ```
 
 `seq()` is a useful function for generating regular sequences of numbers. In
@@ -691,84 +723,37 @@ We could do the same thing for the x axis using `scale_x_continuous()`.
 We can also adjust the extents of the x or y axis.
 
 ```{r scatter_plot_3}
-ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
-  geom_point(size = 0.6, alpha = 0.5) +
-  geom_smooth(method = "lm") +
-  scale_y_continuous(breaks = seq(5, 15, by = 2.5), limits = c(4, 12))
+ggplot(data = metabric,
+       mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
+    geom_point(size = 0.6, alpha = 0.5) +
+    geom_smooth(method = "lm") +
+    scale_y_continuous(breaks = seq(5, 15, by = 2.5), limits = c(4, 12))
 ```
 
 Here, just for demonstration purposes, we set the upper limit to be less than
 the largest values of ESR1 expression and ggplot2 warned us that some rows have
 been removed from the plot.
 
-We can change the minor breaks, e.g. to add more lines that act as guides. These
-are shown as thin white lines when using the default theme (we'll take a look at 
-alternative themes next week).
+Another way to alter the way the plot looks is to define a **`theme()`**. The
+theme controls the way in which non-data components are displayed. You can
+specifiy your own themes, e.g. to remove the grid lines you would do:
 
-```{r scatter_plot_4}
-ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
-  geom_point(size = 0.6, alpha = 0.5) +
-  geom_smooth(method = "lm") +
-  scale_y_continuous(breaks = seq(5, 12.5, by = 2.5), minor_breaks = seq(5, 13.5, 0.5), limits = c(5, 13.5))
+```{r scatter_plot_7a}
+ggplot(data = metabric,
+       mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
+    geom_point(size = 0.6, alpha = 0.5) +
+    theme(panel.grid = element_blank())
 ```
 
-Or we can remove the minor breaks entirely.
-
-```{r scatter_plot_5}
-ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
-  geom_point(size = 0.6, alpha = 0.5) +
-  geom_smooth(method = "lm") +
-  scale_y_continuous(breaks = seq(6, 14, by = 2), minor_breaks = NULL, limits = c(5, 13.5))
-```
-
-Similarly we could remove all breaks entirely.
-
-```{r scatter_plot_6}
-ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
-  geom_point(size = 0.6, alpha = 0.5) +
-  geom_smooth(method = "lm") +
-  scale_y_continuous(breaks = NULL)
-```
-
-A more typical scenario would be to keep the breaks, because we want to display
-the ticks and their lables, but remove the grid lines. Somewhat confusingly the
-position of grid lines are controlled by a scale but preventing these from being
-displayed requires changing the theme. The theme controls the way in which
-non-data components are displayed -- we'll look at how these can be customized
-next week. For now, though, here's an example of turning off the display of all
-grid lines for major and minor breaks for both axes.
+We wont cover themes in any more detail in this course, but you can use them to control pretty much any aspect of the plot. On the other hand, there are also
+a number of predefined themes (and more available in packages such as
+*ggtheme*). For example the "minimal" theme:
 
 ```{r scatter_plot_7}
-ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
-  geom_point(size = 0.6, alpha = 0.5) +
-  geom_smooth(method = "lm") +
-  scale_y_continuous(breaks = seq(4, 14, by = 2), limits = c(4, 14)) +
-  theme(panel.grid = element_blank())
-```
-
-By default, the scales are expanded by 5% of the range on either side. We can
-add or reduce the space as follows.
-
-```{r scatter_plot_8}
-ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
-  geom_point(size = 0.6, alpha = 0.5) +
-  geom_smooth(method = "lm") +
-  scale_x_continuous(expand = expand_scale(mult = 0.01)) +
-  scale_y_continuous(expand = expand_scale(mult = 0.25))
-```
-
-Here we only added 1% (0.01) of the range of GATA3 expression values on either
-side along the x axis but we added 25% (0.25) of the range of ESR1 expression on
-either side along the y axis.
-
-We can move the axis to the other side of the plot –- not sure why you’d want to
-do this but with ggplot2 just about anything is possible.
-
-```{r scatter_plot_9}
-ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
-  geom_point(size = 0.6, alpha = 0.5) +
-  geom_smooth(method = "lm") +
-  scale_x_continuous(position = "top")
+ggplot(data = metabric,
+       mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
+    geom_point(size = 0.6, alpha = 0.5) +
+    theme_minimal()
 ```
 
 ## Colours
@@ -779,10 +764,22 @@ for categorical variables is `scale_colour_discrete`. We can manually set the
 colours we wish to use using `scale_colour_manual` instead.
 
 ```{r scatter_plot_10}
-ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
-  geom_point(size = 0.6, alpha = 0.5) +
-  geom_smooth(method = "lm") +
-  scale_colour_manual(values = c("dodgerblue2", "firebrick2"))
+ggplot(data = metabric,
+       mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
+    geom_point(size = 0.6, alpha = 0.5) +
+    geom_smooth(method = "lm") +
+    scale_colour_manual(values = c("dodgerblue2", "firebrick2"))
+```
+
+If we wanted to specifiy that "dodgerblue2" should be the colour for "Positive" and "firebrick2" for negative, we need to add names to the values vector:
+
+```{r scatter_plot_10a}
+ggplot(data = metabric,
+       mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
+    geom_point(size = 0.6, alpha = 0.5) +
+    geom_smooth(method = "lm") +
+    scale_colour_manual(values = c(Positive = "dodgerblue2",
+                                   Negative = "firebrick2"))
 ```
 
 Setting colours manually is ok when we only have two or three categories but
@@ -792,54 +789,57 @@ access to the [ColorBrewer](http://colorbrewer2.org) palettes through the
 functions `scale_colour_brewer()` and `scale_fill_brewer()`.
 
 ```{r scatter_plot_11}
-ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = `3-gene_classifier`)) +
-  geom_point(size = 0.6, alpha = 0.5, na.rm = TRUE) +
-  scale_colour_brewer(palette = "Set1")
+ggplot(data = metabric,
+       mapping = aes(x = GATA3, y = ESR1, colour = `3-gene_classifier`)) +
+    geom_point(size = 0.6, alpha = 0.5, na.rm = TRUE) +
+    scale_colour_brewer(palette = "Set1")
 ```
 
 Look at the help page for `scale_colour_brewer` to see what other colour
 palettes are available and visit the [ColorBrewer](http://colorbrewer2.org)
 website to see what these look like.
 
-Interestingly, you can set other attributes other than just the colours at the
-same time.
+We can also set other attributes of the scale at the same time. For example,
+we could change the names (labels) of the categories.
 
 ```{r scatter_plot_12}
-ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
-  geom_point(size = 0.6, alpha = 0.5) +
-  geom_smooth(method = "lm") +
-  scale_colour_manual(values = c("dodgerblue2", "firebrick2"), labels = c("ER-negative", "ER-positive")) +
-  labs(colour = NULL)  # remove legend title for colour now that the labels are self-explanatory
+ggplot(data = metabric,
+       mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
+    geom_point(size = 0.6, alpha = 0.5) +
+    geom_smooth(method = "lm") +
+    scale_colour_manual(values = c(Positive = "dodgerblue2",
+                                   Negative = "firebrick2"),
+                        labels = c("ER-negative", "ER-positive"))
 ```
 
 We have applied our own set of mappings from levels in the data to aesthetic
 values.
 
 For continuous variables we may wish to be able to change the colours used in the
-colour gradient. To demonstrate this we'll correct the Nottingham prognostic index
-(NPI) values and use this to colour points in the scatter plot of ESR1 vs GATA3
+colour gradient. To demonstrate we'll use the Nottingham prognostic index
+(NPI) values to colour points in the scatter plot of ESR1 vs GATA3
 expression on a continuous scale.
 
-```{r scatter_plot_13}
-# Nottingham_prognostic_index is incorrectly calculated in the data downloaded from cBioPortal
-metabric <- mutate(metabric, Nottingham_prognostic_index = 0.02 * Tumour_size + Lymph_node_status + Neoplasm_histologic_grade)
-#
-metabric %>%
-  filter(!is.na(Nottingham_prognostic_index)) %>%
-  ggplot(mapping = aes(x = GATA3, y = ESR1, colour = Nottingham_prognostic_index)) +
-  geom_point(size = 0.5)
+```{r scatter_plot_123}
+ggplot(data = metabric,
+       mapping = aes(x = GATA3,
+                     y = ESR1,
+                     colour = Nottingham_prognostic_index)) +
+    geom_point(size = 0.6, alpha = 0.5)
 ```
 
-Higher NPI scores correspond to worse prognosis and lower chance of 5 year
-survival. We'll emphasize those points on the scatter plot by adjusting our
-colour scale.
+ggplot2 by default uses this black to blue continuours scale.  Higher NPI
+scores correspond to worse prognosis and lower chance of 5 year survival. We'll
+emphasize those points on the scatter plot by adjusting our colour scale to run
+from white to red.
 
 ```{r scatter_plot_14}
 metabric %>%
-  filter(!is.na(Nottingham_prognostic_index)) %>%
-  ggplot(mapping = aes(x = GATA3, y = ESR1, colour = Nottingham_prognostic_index)) +
-  geom_point(size = 0.75) +
-  scale_colour_gradient(low = "white", high = "firebrick2")
+    ggplot(mapping = aes(x = GATA3,
+                         y = ESR1,
+                         colour = Nottingham_prognostic_index)) +
+    geom_point(size = 0.75) +
+    scale_colour_gradient(low = "white", high = "red")
 ```
 
 In some cases it might make sense to specify two colour gradients either side
@@ -847,29 +847,15 @@ of a mid-point.
 
 ```{r scatter_plot_15}
 metabric %>%
-  filter(!is.na(Nottingham_prognostic_index)) %>%
-  ggplot(mapping = aes(x = GATA3, y = ESR1, colour = Nottingham_prognostic_index)) +
-  geom_point(size = 0.75) +
-  scale_colour_gradient2(low = "dodgerblue1", mid = "grey90", high = "firebrick1", midpoint = 4.5)
+    ggplot(mapping = aes(x = GATA3,
+                         y = ESR1,
+                         colour = Nottingham_prognostic_index)) +
+    geom_point(size = 0.75) +
+    scale_colour_gradient2(low = "dodgerblue1",
+                           mid = "grey90",
+                           high = "firebrick1",
+                           midpoint = 4.5)
 ```
-
-As before we can override the default labels and other aspects of the colour
-scale within the scale function.
-
-```{r scatter_plot_16}
-metabric %>%
-  filter(!is.na(Nottingham_prognostic_index)) %>%
-  ggplot(mapping = aes(x = GATA3, y = ESR1, colour = Nottingham_prognostic_index)) +
-  geom_point(size = 0.5) +
-  scale_colour_gradient(
-    low = "lightblue", high = "darkblue",
-    name = "NPI",
-    breaks = 2:6,
-    limits = c(1.5, 6.5)
-  )
-```
-
-
 
 # Summary
 
@@ -882,72 +868,96 @@ In this session we have covered the following:
 
 
 
-# Exercises 
+# Exercises
 
 :::exercise
-1. Compute the average survival time for the ER-negative and ER-positive groups. Note that such a comparison only makes sense for those patients that are deceased so apply the appropriate filter first. Add a column for the number of patients in each group. You can use "metabric_clinical_data.csv" file.
+1. Compute the average survival time for the ER-negative and ER-positive groups.
+Note that such a comparison only makes sense for those patients that are
+deceased so apply the appropriate filter first. Add a column for the number of
+patients in each group. You can use "metabric_clinical_data.csv" file.
 
+<details><summary>Answer</summary>
 ```{r ex_1, purl=FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
 metabric <- read_csv("data/metabric_clinical_data.csv")
 metabric %>%
-  filter(Survival_status == "DECEASED") %>%
-  group_by(ER_status) %>%
-  summarize(`Average survival time` = mean(Survival_time), N = n())
+   filter(Survival_status == "DECEASED") %>%
+   group_by(ER_status) %>%
+   summarize(`Average survival time` = mean(Survival_time), N = n())
 ```
+</details>
 
 :::
 
 
 :::exercise
-2. Compute the average tumour size, number of positive lymph nodes and Nottingham prognostic index within ER-negative and ER-positive patients.
+2. Compute the average tumour size, number of positive lymph nodes and
+Nottingham prognostic index within ER-negative and ER-positive patients.
 
+<details><summary>Answer</summary>
 ```{r ex_2, purl=FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
 metabric <- read_csv("data/metabric_clinical_data.csv")
 metabric %>%
-  group_by(ER_status) %>%
-  summarize_at(vars(Tumour_size, Lymph_nodes_examined_positive, Nottingham_prognostic_index), mean, na.rm = TRUE)
+    group_by(ER_status) %>%
+    summarize(across(c(Tumour_size,
+                       Lymph_nodes_examined_positive,
+                       Nottingham_prognostic_index),
+                     mean, na.rm = TRUE))
 ```
+</details>
+
 :::
 
 
 
 :::exercise
-3. Count the numbers of mutations for each gene and display the top 10 most frequently mutated genes using metabric_mutations.csv data.
+3. Count the numbers of mutations for each gene and display the top 10 most
+frequently mutated genes using metabric_mutations.csv data.
 
+<details><summary>Answer</summary>
 ```{r ex_3, purl=FALSE, message=FALSE, warning=FALSE}
 mutations <- read_csv("data/metabric_mutations.csv")
 mutations %>%
-  count(Gene) %>%
-  arrange(desc(n)) %>%
-  head(10)
+    count(Gene) %>%
+    arrange(desc(n)) %>%
+    head(10)
 ```
+</details>
+
 :::
 
 
 
 :::exercise
-4. In breast cancers, PIK3CA and TP53 are the most commonly mutated genes with mutations occurring in specific regions of the gene. Find out which codons of PIK3CA are most commonly mutated.
+4. In breast cancers, PIK3CA and TP53 are the most commonly mutated genes with
+mutations occurring in specific regions of the gene. Find out which codons of
+PIK3CA are most commonly mutated.
 
+<details><summary>Answer</summary>
 ```{r ex_4, purl=FALSE, message=FALSE, warning=FALSE}
 mutations %>%
   filter(Gene == "PIK3CA") %>%
   count(Codon) %>%
   arrange(desc(n))
 ```
+</details>
 :::
 
 
 :::exercise
-5. Use boxplots to illustrate the distribution of diagnosis age for 3-gene classification groups of patients. Remove any patients who are unclassified. The boxplots should be colored according to the group.
+5. Use boxplots to illustrate the distribution of diagnosis age for 3-gene
+classification groups of patients. Remove any patients who are unclassified. The
+boxplots should be colored according to the group.
 
+<details><summary>Answer</summary>
 ```{r}
-metabric %>% 
-  filter(!is.na(`3-gene_classifier`)) %>% 
+metabric %>%
+  filter(!is.na(`3-gene_classifier`)) %>%
 ggplot( mapping=aes(x=`3-gene_classifier`, y=Age_at_diagnosis, colour=`3-gene_classifier`)) +
   geom_boxplot() +
   scale_colour_discrete(name="3 gene classifier")
 ```
+</details>
 :::
 
