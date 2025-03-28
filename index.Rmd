@@ -40,8 +40,6 @@ previously and would like a refresher or to consolidate their skills.
 * More **in-depth tidyverse book** covering the concepts introduced in this course to go through in your own time https://r4ds.had.co.nz/.
 
     
- 
-
 # Schedule
 
 1. [Introduction to R](week1.html)  - An introduction to RStudio, R objects, data types, functions and vectors

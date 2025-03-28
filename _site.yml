@@ -5,9 +5,9 @@ navbar:
     - text: "Contents"
       href: index.html
       menu:
-        - text: "Week 1 - An introduction to RStudio, R objects, data types, functions and vectors"
+        - text: "Week 1 - Introduction to R"
           href: week1.html
-        - text: "Week 2 - An introduction to other data structures"
+        - text: "Week 2 - Introduction to R data structures"
           href: week2.html
         - text: "Week 3 - Working with data in R"
           href: week3.html
@@ -17,8 +17,8 @@ navbar:
           href: week5.html
         - text: "Week 6 - Grouping and combining data"
           href: week6.html
-        - text: "Week 7 - Restructuring data for analysis"
-          href: week7.html
+        - text: "Week 8 - Restructuring data for analysis"
+          href: week8.html
   right:
     - icon: fa-github fa-lg
       href: https://github.com/bioinformatics-core-shared-training/Bitesize-R
