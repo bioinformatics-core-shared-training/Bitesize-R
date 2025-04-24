@@ -971,4 +971,33 @@ The mean mpg of cars with 6 cylinders was **`r six_cyl_mean_mpg`**.
 ## Challenge
 
 Based on the information in this document and in the various links, create a
-report to match the one [here](). 
+report to match the one [here](week7_Rmarkdown_exercise.html). 
+
+I have hidden the code except for the chunk loading the data and the last chunk,
+which prints the session info. Where the code chunks should be you'll see:
+
+```
+Code chunk: *some details*
+```
+
+Replace these as necesary with your own code - you may want to refer back to 
+previous sessions.
+
+You may also need to do a bit of searching in help pages, documnetation linked
+above or on the web generally to figure out some of the code. For example, in
+the final figure I have added sub-figure labels (a, b, c, d) using `patchwork`.
+I couldn't remember how to do this, so I did a web search for "patchwork figure
+labels".
+
+Don't worry about the grey banner at the top, that is part of this website.
+
+## Session details
+
+It is good practice to include details of the R environment used in the analysis,
+including the R version, packages used and their version numbers. This can be
+done at the end of the report.  The neatest way to do this is to use the
+`devtools` package.
+
+```{r sessionInfo}
+devtools::session_info()
+```
