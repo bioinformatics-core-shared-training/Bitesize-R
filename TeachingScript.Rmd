@@ -1,0 +1,215 @@
+---
+title: "MyFirstRmarkdown"
+author: "Ashley Sawle"
+date: "2th April 2025"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, message=FALSE}
+library(tidyverse)
+library(patchwork)
+library(knitr)
+library(kableExtra)
+library(DT)
+library(readr)
+opts_chunk$set(warning = FALSE, echo = TRUE, cache = TRUE)
+```
+
+
+# The `mtcars` data set
+
+## Description of the data set
+
+There is a popular built-in data set in R called "**mtcars**" (Motor Trend Car
+Road Tests), which is retrieved from the 1974 Motor Trend US Magazine. The
+dataset contains measurements on *11 different* attributes for *32 different*
+cars.
+
+## More inline formatting {#inline_section}
+
+Superscript: 32 = 2^5^
+
+Subscript: Burning petrol creates CO~2~
+
+Code: Later we will used the `tidyverse` package
+
+# Using tab sets {.tabset}
+
+## Bold
+
+This is **bold**.
+
+It is not ~subscript~.
+
+## Italics
+
+This is *italics*
+
+## Strikethrough
+
+This is ~~strikethrough~~
+
+# End the tabs
+
+To end the tabs, start a new section at the same level (or higher) as before.
+
+# A note on linebreaks
+
+Rmarkdown does not recognise a new line as a "line break". This is the next line, but it will stay in the same line of text.
+
+Rmarkdown does not recognise a new line as a "line break".\
+To create a break add two (or more) spaces at the end of the previous line.
+
+# Lists (bullet points)
+
+To create an unordered list (bullet points):
+
+* Use an asterisk as the beginning of the line
+* Each asterisk is a new bullet
+* You can also use "+" or "-"
+    - you can create sublists by indenting
+    - using the different symbols at different levels is clearer but not 
+    necessary
+    
+To create an ordered list use a number, a lower case letter or "i" for roman
+numerals
+
+Some animals:
+
+1. Cat
+1. Ferret
+1. Dog
+    a. Terriers
+        i. Jack Russell
+        ii. Airedale
+    b. Spaniels
+48. Goldfish
+
+# Links
+
+Basic syntax is the link text surrounded by square brackes, followed by the link
+surrounded by round brackets.
+
+## External links
+
+[Link to the BBC home page](https://www.bbc.co.uk)
+
+## Internal links
+
+These are links within the document. First we need to create a tag for
+the header we want to link to by adding `{#tag_name}` after the header.
+
+[Go to inline section](#inline_section)
+
+## Inserting images
+
+Similar syntax to the links, but precede it with an `!`. The first part
+becomes a caption
+
+![Vectors in R](images/Vectors-in-R.jpg){width=50%}
+
+## Manual tables
+
+| Name        | Band        |
+| :---------: | ----------: |
+| Mick        | Stones      |
+| John        | Beatles     |
+| Paul        | Beatles     |       
+
+## Blockquotes
+
+> There is a popular built-in data set in R called "**mtcars**" (Motor Trend Car
+> Road Tests), which is retrieved from the 1974 Motor Trend US Magazine. The
+> dataset contains measurements on *11 different* attributes for *32 different*
+> cars.
+
+# R code chunks and option
+
+They look like this
+
+```{r}
+x <- 15
+y <- 20
+x + y
+```
+
+## Chunk options
+
+```{r, echo=FALSE}
+x <- 19
+y <- 20
+x + y
+```
+
+```{r, include=FALSE}
+x <- 19
+y <- 90
+a <- x + y
+```
+
+
+```{r, eval=FALSE}
+x <- 19
+y <- 190
+a <- x + y
+```
+
+## Chunk labels
+
+```{r label}
+z <- 10
+z^8
+```
+
+## The "setup" chunk
+
+Put this at the very start of your script. It should load all necessary packages
+and set any global options (see the chunk).
+
+## Tabular output from chunk
+
+```{r smallTable}
+smallTable <- mtcars %>%
+  rownames_to_column("car") %>%
+  select(car, mpg, cyl, wt) %>%
+  slice(1:5)
+smallTable
+```
+
+### The `kable` function
+
+```{r}
+smallTable %>%
+  kable(digits = 2, align = "c")
+```
+
+# The `kableExtra` package
+
+```{r}
+smallTable %>%
+  kbl() %>%
+  kable_styling(bootstrap_options = c("striped")) %>%
+  column_spec(column = 1, bold = TRUE, border_right = TRUE)
+```
+
+
+Built in "themes"
+
+```{r}
+smallTable %>%
+  kbl() %>%
+  kable_classic(full_width = F)
+```
+
+## Interactive tables with `DT`
+
+```{r}
+longTable <- mtcars %>%
+  rownames_to_column("car")
+longTable %>%
+  datatable()
+```
+
