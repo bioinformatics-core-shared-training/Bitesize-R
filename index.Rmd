@@ -54,7 +54,7 @@ previously and would like a refresher or to consolidate their skills.
 
 6. [Grouping and combining data](week6.html)  - Advanced grouping and summarization operations, joining data from different tables, customizing ggplot2 plots
 
-7. [Advanced Concepts of R-Studio]  - The concepts of using Rmarkdown for reproducible research
+7. [Generating reports with R Markdown](week7_Rmarkdown.html)  - Using Rmarkdown for reproducible research
 
 8. [Restructuring data for analysis](week8.html)  - The concept of 'tidy data', pivoting and separating operations, ggplot2 extras
 
