@@ -2,14 +2,6 @@
 title: "R Markdown" 
 ---
 
-```{r setup, include=FALSE}
-library(tidyverse)
-library(patchwork)
-library(knitr)
-library(kableExtra)
-library(DT)
-```
-
 > #### Learning objectives
 >
 > -   Learn how to generate an html/pdf report using Rmarkdown and
@@ -29,6 +21,33 @@ insert R code chunks, and how to render the document to create a report.
 
 More detailed materials can be found 
 [here](https://rmarkdown.rstudio.com/index.html).
+
+## Packages for this session
+
+We will be using the following packages in this session. If you don't
+have them installed, you can do so using the `install.packages()` function.
+
+
+```{r, message=FALSE}
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(DT)
+library(patchwork)
+```
+
+`knitr` is the package that is used to convert R Markdown documents to
+various output formats. It is also used to control how the output of R code is
+rendered in the document, and its `kable` function is used to create tables in R
+Markdown documents. Note that you don't need to load the `knitr` package
+explicitly, as it is loaded automatically when you create an R Markdown, but if
+you want to use the `kable` function you may wish in order not to have to type
+`knitr::kable()` every time.
+
+The `kableExtra` package extends the functionality of `knitr`, providing
+additional functions for formatting tables. The `DT` package provides a way to
+create interactive tables in R Markdown documents. The `patchwork` package
+provides a way to combine multiple ggplots into a single figure.
 
 ## Creating an R Markdown document
 
@@ -53,11 +72,11 @@ Save the starter script as `MyFirstRmarkdown.Rmd`.
 
 An R Markdown file is made up of 3 components:
 
--   Header - metadata and instructions related to rendering the document
--   Markdown sections - Text, images, links, tables, lists to be
-    included in the report
--   R code chunks - Code chunks to be executed and the output included
-    in the report
+- Header - metadata and instructions related to rendering the document
+- Markdown sections - Text, images, links, tables, lists to be
+  included in the report
+- R code chunks - Code chunks to be executed and the output included
+  in the report
 
 ![](images/Rmarkdown_starter_script_Annotated.png)
 
@@ -104,12 +123,13 @@ date: "2025-04-23"
 Markdown is a markup language that allows you to add formatting to text,
 such as bold or italics. Unlike in a word processor such as MS Word, the
 effect of formatting is not visible in a markdown (.md) document, only
-once the document is rendered to create the output. Markdown used syntax
-to add formats the text. The benefit of this is Markdown is lightweight
-and platform independent.
+once the document is rendered to create the output. Markdown uses specific
+syntax to add formats to the text. The benefit of this is Markdown is
+lightweight and platform independent.
 
 R Markdown combines normal Markdown for text and images with separate
-chunks thank can contain executable R code.
+chunks thank can contain executable R code, the outputs of which can be
+included in the document.
 
 The full documentation of the Markdown syntax can be found
 [here](https://www.markdownguide.org/). Here we will concentrate on the
@@ -678,6 +698,32 @@ of the script panel:
 This gives us a way to navigate through the document and includes any headers and
 code chunks with labels. This is very useful for long documents.
 
+### The "setup" chunk
+
+Best practice is to create a "setup" chunk at the beginning of the document.
+This chunk should include all the packages that you will need to run the
+the code in the document.
+
+The "setup" chunk will also include any options that you want to
+set for the entire document. For example, you might want to set the default
+chunk options for the entire document to not display code. You can do this
+using the `knitr` command `opts_chunk$set()`. For example the set up chunk might
+look like this:
+
+````markdown
+`r ''````{r setup, message=FALSE}
+library(tidyverse)
+library(patchwork)
+library(knitr)
+library(kableExtra)
+library(DT)
+knitr::opts_chunk$set(warning = FALSE, echo = TRUE)
+```
+````
+
+It's good idea to set `message = FALSE` for the setup chunk so that it does not
+print all the package startup messages in the rendered document.
+
 ### Tabular output
 
 By default, R Markdown will display tables in basically the same way as
@@ -888,6 +934,39 @@ works.
     plot_annotation(title = "Patchwork example",
                     subtitle = "Combining plots with patchwork")
 ```
+
+## Inline R code
+
+It is also possible to include R code inline in the text. This is done by
+surrounding the code with single backticks and start it wil `r`. This is useful
+if, for example, you want to include a value from a variable in the text. For 
+example:
+
+
+````markdown
+`r ''````{r inline}
+six_cyl_mean_mpg <- mtcars %>%
+    filter(cyl == 6) %>%
+    summarise(mpg = mean(mpg)) %>%
+    pull(mpg)
+```
+The mean mpg of cars with 6 cylinders was **``r "r six_cyl_mean_mgp"``**.
+````
+
+Will be rendered as:
+
+================================================================================
+
+```{r inline}
+six_cyl_mean_mpg <- mtcars %>%
+    filter(cyl == 6) %>%
+    summarise(mpg = mean(mpg)) %>%
+    pull(mpg)
+```
+
+The mean mpg of cars with 6 cylinders was **`r six_cyl_mean_mpg`**.
+
+================================================================================
 
 ## Challenge
 
