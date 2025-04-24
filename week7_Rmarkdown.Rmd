@@ -254,7 +254,7 @@ The tab set ends when we return to a higher header level.
 
 is rendered as:
 
-================================================================================
+<div class="renderedblock">
 
 #### Some different formattings {.tabset .unlisted .unnumbered}
 
@@ -279,11 +279,11 @@ as ~Strikethrough~.
 
 The tab set ends when we return to a higher header level.
 
-================================================================================
+</div>
 
-**NOTE**: The lines of "=====" would not be part of the rendered document, but
-are included here to bracket the output rendered from the markdown above. 
-
+**NOTE**: The border and background colour have been added in order to
+differentiate the output rendered from the markdown above from the main
+text of this document. This is not part of the default output. 
 
 ### Line breaks
 
@@ -299,12 +299,10 @@ There are no spaces after the end of the previous line
 
 is rendered as:
 
-================================================================================
-
+<div class="renderedblock">
 This is the first line There are no spaces after the end of the previous
 line
-
-================================================================================
+</div>
 
 where as:
 
@@ -315,12 +313,10 @@ There are no spaces after the end of the previous line
 
 is rendered as:
 
-================================================================================
-
+<div class="renderedblock">
 This is the first line\
 There are no spaces after the end of the previous line
-
-================================================================================
+</div>
 
 ### Lists
 
@@ -346,8 +342,7 @@ thing). You can created nested lists by indenting by 4 spaces.
 
 is rendered as:
 
-================================================================================
-
+<div class="renderedblock">
 -   Cricket
 -   Rugby
 -   Football
@@ -357,8 +352,7 @@ is rendered as:
 -   Basketball
 -   Volleyball
 -   Hockey
-
-================================================================================
+</div>
 
 #### Ordered lists
 
@@ -382,8 +376,7 @@ indentation can be used to create nested lists. For example
 
 is rendered as:
 
-================================================================================
-
+<div class="renderedblock">
 1.  Cat
 2.  Ferret
 3.  Dog
@@ -395,8 +388,7 @@ is rendered as:
     b.  Labradors
     c.  Spaniels
 4.  Goldfish
-
-================================================================================
+</div>
 
 It isn't actually necessary to use particular numbers/letters/roman
 numerals in any particular order - the correct order for the bullets
@@ -483,13 +475,13 @@ can control the size by specifying the width in either absolute display
 pixels or the percentage of the document width with the following
 syntax:
 
-`![Figure 1: A cheetah!](images/Rmarkdown_cheetah.png){width=10%}`
+`![Figure 1: Cheetah](images/Rmarkdown_cheetah.png){width=10%}`
 
 inserts the image like this:
 
 ![Figure 1: Cheetah](images/Rmarkdown_cheetah.png){width="10%"}
 
-`![Figure 1: A cheetah!](images/Rmarkdown_cheetah.png){width=150px}`
+`![Figure 1: Cheetah](images/Rmarkdown_cheetah.png){width=150px}`
 
 inserts the image like this:
 
@@ -511,11 +503,13 @@ table. This can be achieved using the following syntax.
 
 is rendered as:
 
+<div class="renderedblock">
 | Name | Band    |
 |------|---------|
 | Mick | Stones  |
 | John | Beatles |
 | Paul | Beatles |
+</div>
 
 Table alignments can be done using the following syntax:
 
@@ -529,15 +523,13 @@ Table alignments can be done using the following syntax:
 
 This is rendered as:
 
-================================================================================
-
+<div class="renderedblock">
 | Name  |  Band   | Instrument |
 |:------|:-------:|-----------:|
 | John  | Beatles |     Guitar |
 | Paul  | Beatles |       Bass |
 | Keith | Stones  |     Guitar |
-
-================================================================================
+</div>
 
 ### Blockquotes
 
@@ -581,7 +573,7 @@ metabric %>%
 
 This will be rendered as:
 
-```         
+```{blocktype = "renderedblock"}         
 metabric %>%
     group_by(ER_status, Cancer_type) %>%
     summarise(ERBB2_mean = mean(ERBB2)) %>%
@@ -612,7 +604,7 @@ x + y
 ```
 ````
 
-Generates the following in the document:
+Generates the following in the output:
 
 ```{r}
 x <- 10
@@ -623,7 +615,7 @@ x + y
 By default the code is written to a code chunk (we can change this - see [below](#chunk_opts)).
 and any output from the code is written underneath. The output might include
 anything that would normally be written to the console (such the result of `x +
-y` here), tables, figures, or even warnings or errors.
+y` here), tables, plots, or even warnings or errors.
 
 ### Creating code chunks
 
@@ -641,8 +633,8 @@ The empty code chunk will look like this:
 
 ![](images/Rmarkdown_empty_code_chunk.png)
 
-You'll notice a few icons in the toolbar above the code chunk. These
-are used to run the code chunk, run all code chunks above the current
+You'll notice a few icons on the right in the toolbar above the code chunk.
+These are used to run the code chunk, run all code chunks above the current
 chunk, and to manage chunk options (see below). 
 
 ### Running code chunks
@@ -721,15 +713,18 @@ knitr::opts_chunk$set(warning = FALSE, echo = TRUE)
 ```
 ````
 
+The `opts_chunk$set()` function sets the default options for all chunks, in this
+case to always display the code and not display any warnings. You can override
+these options in individual chunks by specifying the options in the chunk header.
+
 It's good idea to set `message = FALSE` for the setup chunk so that it does not
 print all the package startup messages in the rendered document.
 
 ### Tabular output
 
 By default, R Markdown will display tables in basically the same way as
-they would be displayed in the console. This is not very pretty and
-not very useful. For example, if we display the first few rows of the
-`iris` dataset using the `head()` function, we get the following:
+they would be displayed in the console. For example, if we display the first few
+rows of the `mtcars` dataset we get the following:
 
 ```{r basicTable}
 smallTable <- mtcars %>%
@@ -739,10 +734,11 @@ smallTable <- mtcars %>%
 smallTable
 ```
 
-#### `kable()`
+Basically imformative, but not very pretty. There are a lot of things we can do
+to make the table a more functional and look better in our report. The simplest
+is to use the `kable()` function from the `knitr` package. 
 
-The `knitr` package provides the function `kable()` to produce nicer looking
-tables.
+#### The `kable()` function
 
 ```{r kable}
 smallTable %>%
@@ -768,10 +764,10 @@ sophisticated ways. There is a list of some of the most popular packages
 Here we will look at two packages: `kableExtra`, which extends the formatting
 capabilities of `kable`, and `DT`, which provides a more interactive table format.
 
-#### `kableExtra`
+#### The `kableExtra` package
 
-The function `kableExtra` replaces `kable` with the function `kbl()`
-package to display tables in R Markdown. We can then use various formatting 
+The package `kableExtra` replaces `kable()` with the function `kbl()`
+to display tables in R Markdown. We can then use various formatting 
 commands to control the appearance of the table in much the same way as we
 add layers to a ggplot. The `kableExtra` package provides a number of functions
 that can be used to format tables, including `kable_styling()`, `column_spec()`,
@@ -795,12 +791,15 @@ smallTable %>%
     kable_classic(full_width = F, html_font = "Cambria")
 ```
 
-#### `DT`
+More details about all the fancy things you can do with `kableExtra` can be found
+[here](https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html).
+
+#### The `DT` package
 
 The `DT` package provides a more interactive table format that allows us to
 sort, filter, search, and paginate the table. It also provides options to
 add buttons to export the table to CSV, Excel, or PDF format. The basic 
-command is `datatable()`, which takes a data frame as input and returns an
+command is `datatable()`, which takes a data.frame as input and returns an
 interactive table. 
 
 ```{r DTa}
@@ -863,12 +862,29 @@ documentation.  Also, be carefule not to confuse the `DT` package with the
 `data.table` package, which is a different package for fast data manipulation in
 R.
 
+**NOTE**: Be wary of creating very large tables in R Markdown documents. The
+data in the table is all included in the final document when it is rendered.
+If you have a very large table resulting document can be very large.
 
 ### Plots
 
 If a code chunk generates a plot, the plot will be displayed in the output
-document. Using chunk options we can control the size of the plot in the
-document and add a caption to the plot.  
+document. 
+
+````markdown
+`r ''````{r plot}
+mtcars %>%
+    ggplot(aes(x = mpg, y = wt)) +
+    geom_point() +
+    labs(title = "Scatter plot of weight vs miles per gallon",
+         x = "Miles per gallon",
+         y = "Weight") +
+    theme_minimal()
+```
+````
+
+is rendered as:
+
 ```{r plot}
 mtcars %>%
     ggplot(aes(x = mpg, y = wt)) +
@@ -879,12 +895,29 @@ mtcars %>%
     theme_minimal()
 ```
 
+Using chunk options we can control the size of the plot in the
+document and add a caption to the plot.  
+
 The default size of the plot is 7 inches wide and 5 inches high. We can change
 the size of the plot using the `fig.width` and `fig.height` options.
 
 Note that the caption can be specified as a string in the `fig.cap` option or
 using a variable that can be defined in the code chunk (or in a previous code
 chunk).  
+
+````
+`r ''````{r plot2, fig.with=5, fig.height=3, fig.cap=figCap}
+figCap <- "Scatter plot of weight vs miles per gallon"
+mtcars %>%
+    ggplot(aes(x = mpg, y = wt)) +
+    geom_point() +
+    labs(x = "Miles per gallon",
+         y = "Weight") +
+    theme_minimal()
+```
+````
+
+is rendered as:
 
 ```{r plot2, fig.with=5, fig.height=3, fig.cap=figCap}
 figCap <- "Scatter plot of weight vs miles per gallon"
@@ -911,33 +944,47 @@ p1 <- mtcars %>%
     mutate(across(cyl, factor)) %>%
     ggplot(aes(x = mpg, y = wt)) +
     geom_point(aes(colour = cyl)) +
-    theme_minimal()
+    geom_text(label = "A", x = 22.5, y = 3.5, size = 50)
 p2 <- mtcars %>%
     mutate(across(cyl, factor)) %>%
-    ggplot(aes(x = mpg, y = hp)) +
+    ggplot(aes(x = gear, y = hp)) +
     geom_point(aes(colour = cyl)) +
-    theme_minimal()
-p1 + p2
+    geom_text(label = "B", x = 4, y = 195, size = 50)
+p1 + p2 
 ```
 
 `patchwork` provides a lot of options for combining plots, including
 `+` to add plots together, `/` to stack plots vertically, and `|` to stack
-plots horizontally. We can also use `plot_layout()` to control various aspects of the
-layout, for example we can combine legends when they are the same.
+plots horizontally. We can use `plot_layout()` to control various aspects of the
+layout, for example we can combine legends when they are the same. We can also
+use `plot_annotation()` to add a title and subtitle to the figure (and other
+annotations).
 
 I am going to reuse the same plots a few times just to show you how the layout
 works.
 
 ```{r patchworkB, fig.height=8, fig.width=12}
-(p1 + p2) / (p2 + p1) | (p1 / p2 / p1) +
+((p1 + p2) / (p2 + p1 + p2) | (p1 / p2 / p1)) +
     plot_layout(guides = "collect") +
     plot_annotation(title = "Patchwork example",
                     subtitle = "Combining plots with patchwork")
 ```
 
+Here I have gathered plots into three plot groups - `p1 + p2`, `p2 + p1 + p1`, and
+`p1 / p2 / p1`. In the final group I have used the `/` operator to stack
+the plots vertically. I have then stacked the first two groups above each other
+and the third group to the right using the `|` operator.
+
+The `plot_layout()` and `plot_annotation()` can be added to any grouping level
+so to get them to apply to the whole figure, we put all three groups in brackets
+to define the whole figure. It can take a bit of getting used to, but once you
+get the hang of it, it is very simple to create complex figures with many plots.
+
+Extensive documentation is available [here](https://patchwork.data-imaginist.com/).
+
 ## Inline R code
 
-It is also possible to include R code inline in the text. This is done by
+It is also possible to include R code inline in the markdown. This is done by
 surrounding the code with single backticks and start it wil `r`. This is useful
 if, for example, you want to include a value from a variable in the text. For 
 example:
@@ -950,13 +997,12 @@ six_cyl_mean_mpg <- mtcars %>%
     summarise(mpg = mean(mpg)) %>%
     pull(mpg)
 ```
-The mean mpg of cars with 6 cylinders was **``r "r six_cyl_mean_mgp"``**.
+The mean mpg of cars with 6 cylinders was **``r "r six_cyl_mean_mpg"``**.
 ````
 
 Will be rendered as:
 
-================================================================================
-
+<div class="renderedblock">
 ```{r inline}
 six_cyl_mean_mpg <- mtcars %>%
     filter(cyl == 6) %>%
@@ -965,8 +1011,7 @@ six_cyl_mean_mpg <- mtcars %>%
 ```
 
 The mean mpg of cars with 6 cylinders was **`r six_cyl_mean_mpg`**.
-
-================================================================================
+</div>
 
 ## Challenge
 
@@ -983,11 +1028,11 @@ Code chunk: *some details*
 Replace these as necesary with your own code - you may want to refer back to 
 previous sessions.
 
-You may also need to do a bit of searching in help pages, documnetation linked
-above or on the web generally to figure out some of the code. For example, in
-the final figure I have added sub-figure labels (a, b, c, d) using `patchwork`.
-I couldn't remember how to do this, so I did a web search for "patchwork figure
-labels".
+You may also need to do a bit of searching in function help pages, documentation
+linked above or on the web generally to figure out some of the code. For
+example, in the final figure I have added sub-figure labels (a, b, c, d) using
+`patchwork`.  I couldn't remember how to do this, so I did a web search for
+"patchwork figure labels".
 
 Don't worry about the grey banner at the top, that is part of this website.
 
