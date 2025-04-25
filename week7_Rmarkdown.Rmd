@@ -863,7 +863,7 @@ documentation.  Also, be carefule not to confuse the `DT` package with the
 R.
 
 **NOTE**: Be wary of creating very large tables in R Markdown documents. The
-data in the table is all included in the final document when it is rendered.
+data in the table is all embedded in the final document when it is rendered.
 If you have a very large table resulting document can be very large.
 
 ### Plots
@@ -1035,6 +1035,13 @@ example, in the final figure I have added sub-figure labels (a, b, c, d) using
 "patchwork figure labels".
 
 Don't worry about the grey banner at the top, that is part of this website.
+
+## Acknowledgements
+
+This session was developed with reference to materials by 
+[Alexia Cardona](https://github.com/ac812/reproducibility-training) and
+the 
+[Data Carpentry project](https://datacarpentry.github.io/r-socialsci/instructor/06-rmarkdown.html).
 
 ## Session details
 
