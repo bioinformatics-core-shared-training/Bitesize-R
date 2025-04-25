@@ -7,7 +7,7 @@ title: "R Markdown"
 > -   Learn how to generate an html/pdf report using Rmarkdown and
 >     Rstudio
 
-## What is R Markdown?
+# What is R Markdown?
 
 R Markdown provides a means of combining executable R code, code output
 and textual content in a single document. This documents can then be
@@ -22,7 +22,7 @@ insert R code chunks, and how to render the document to create a report.
 More detailed materials can be found 
 [here](https://rmarkdown.rstudio.com/index.html).
 
-## Packages for this session
+# Packages for this session
 
 We will be using the following packages in this session. If you don't
 have them installed, you can do so using the `install.packages()` function.
@@ -49,7 +49,7 @@ additional functions for formatting tables. The `DT` package provides a way to
 create interactive tables in R Markdown documents. The `patchwork` package
 provides a way to combine multiple ggplots into a single figure.
 
-## Creating an R Markdown document
+# Creating an R Markdown document
 
 We can start a new R Markdown document in RStudio from the menu bar:
 
@@ -68,7 +68,7 @@ script.
 
 Save the starter script as `MyFirstRmarkdown.Rmd`.
 
-## The basic components of an R Markdown
+# The basic components of an R Markdown
 
 An R Markdown file is made up of 3 components:
 
@@ -94,7 +94,7 @@ extensible to link multiple documents into "books" or websites. We'll
 keep it simple for this introduction. Let's look at each section in a
 little more detail.
 
-## Header
+# Header
 
 The R markdown document starts with a header in [YAML
 format](https://yaml.org/).
@@ -118,7 +118,7 @@ date: "2025-04-23"
 ---
 ```
 
-## Markdown sections {#markdown-header}
+# Markdown sections {#markdown-header}
 
 Markdown is a markup language that allows you to add formatting to text,
 such as bold or italics. Unlike in a word processor such as MS Word, the
@@ -135,7 +135,7 @@ The full documentation of the Markdown syntax can be found
 [here](https://www.markdownguide.org/). Here we will concentrate on the
 most commonly used elements.
 
-### Inline text formatting
+## Inline text formatting
 
 Seeing as we have already mentioned **bold** and *italics*, let's see
 how they work. To apply inline formatting for text, we simply surround
@@ -169,32 +169,31 @@ Other possible inline formatting syntax includes:
 
 Note that any amount of text can come between the two sets of syntax.
 
-### Headings
+## Headings
 
 Section headings are created using the `#` symbol (technically called an
 octothorp!) at the beginning of the line. The top level is the document
 title and uses one `#`:
 
-`# Title`
+`# Section`
 
-However, we have specified this in the yaml header so would not use it
-in the body of the document. Using 2 creates a section header:
 
-`## Section` → [Section]{style="font-weight:500; font-size:20px"}
+Using 2 creates a section header:
+
+`## Sub-section` → [Sub-section]{style="font-weight:500; font-size:20px"}
 
 Increasing the number of `#` symbols creates deeper and deeper levels of
 sub-sections.
 
 ```         
-# Title
-## Section
-### Sub-section
-#### Sub-sub section
-##### Sub-sub-sub section
-###### Sub-sub-sub-sub section
+# Section
+# Sub-section
+## Sub-sub section
+### Sub-sub-sub section
+#### Sub-sub-sub-sub section
 ```
 
-#### Adding a table of contents
+### Adding a table of contents
 
 The section headers can be automatically added to a table of contents.
 As this is "instructions related to rendering the document", we need to
@@ -222,7 +221,7 @@ output:
     toc_float: true
 ```
 
-#### Tab sets
+### Tab sets
 
 A neat thing to do with headers and sub-headers is to create tab sets.
 If we add the syntax {.tabset} after a header, all subsequent
@@ -230,24 +229,24 @@ sub-headers on the next level down will be rendered as tabs, rather than
 just consecutive text. For example:
 
 ```         
-#### Some different formattings {.tabset}
+### Some different formattings {.tabset}
 
 The following tabs show different inline formatting syntax.
 
-##### Bold
+#### Bold
 
 Bold is achieved with double asterisks e.g. `**bold**` is rendered as **bold**.
 
-##### Italics
+#### Italics
 
 Italics is achieved with a single asterisk e.g. `*italics*` is rendered as *italics*.
 
-##### Strikethrough {.unlisted .unnumbered}
+#### Strikethrough {.unlisted .unnumbered}
 
 Strikethrough is achieved with tilde e.g. `~strikethrough~` is rendered as 
 ~Strikethrough~.
 
-#### Next section
+### Next section
 
 The tab set ends when we return to a higher header level.
 ```
@@ -256,26 +255,26 @@ is rendered as:
 
 <div class="renderedblock">
 
-#### Some different formattings {.tabset .unlisted .unnumbered}
+### Some different formattings {.tabset .unlisted .unnumbered}
 
 The following tabs show different inline formatting syntax.
 
-##### Bold {.unlisted .unnumbered}
+#### Bold {.unlisted .unnumbered}
 
 Bold is achieved with double asterisks e.g. `**bold**` is rendered as
 **bold**.
 
-##### Italics {.unlisted .unnumbered}
+#### Italics {.unlisted .unnumbered}
 
 Italics is achieved with a single asterisk e.g. `*italics*` is rendered
 as *italics*.
 
-##### Strikethrough {.unlisted .unnumbered}
+#### Strikethrough {.unlisted .unnumbered}
 
 Strikethrough is achieved with tilde e.g. `~strikethrough~` is rendered
 as ~Strikethrough~.
 
-#### Next section {.unlisted .unnumbered}
+### Next section {.unlisted .unnumbered}
 
 The tab set ends when we return to a higher header level.
 
@@ -285,7 +284,7 @@ The tab set ends when we return to a higher header level.
 differentiate the output rendered from the markdown above from the main
 text of this document. This is not part of the default output. 
 
-### Line breaks
+## Line breaks
 
 Two consecutive lines of body text in the R Markdown document will be
 read as as the same paragraph and concatenated. To insert a line break
@@ -318,12 +317,12 @@ This is the first line\
 There are no spaces after the end of the previous line
 </div>
 
-### Lists
+## Lists
 
 We can create both unordered lists (bullet points) or ordered lists
 (numbered).
 
-#### Unordered lists
+### Unordered lists
 
 To create an unordered list using `*`, `-` or `+` (all do the same
 thing). You can created nested lists by indenting by 4 spaces.
@@ -354,7 +353,7 @@ is rendered as:
 -   Hockey
 </div>
 
-#### Ordered lists
+### Ordered lists
 
 Ordered lists can be created using a number for numeric bullets, a lower
 case letter for `a`, `b`, `c`...etc., or `i`s for roman numerals. Again
@@ -409,7 +408,7 @@ following would results in the same output:
 1. Goldfish
 ```
 
-### Links
+## Links
 
 As with a standard html web page, we can add hyperlinks, both to
 internal sections of the document or to external pages. The general
@@ -421,7 +420,7 @@ itself (internal tag or external page) surrounded by round backets:
 [This is the text](this_is_the_link)
 ```
 
-#### External links
+### External links
 
 External links can either be to another html document on the same file
 system or to a URL elsewhere on the internet.
@@ -437,7 +436,7 @@ Alternatively, we can link to pages elsewhere on the internet, e.g:
 → [Hadley Wickham's old R Markdown
 page](https://r4ds.had.co.nz/r-markdown.html)
 
-#### Internal links to sections
+### Internal links to sections
 
 We can link to any section of the current document, but first we need to
 add a tag to the header for that section. For example, if we want to be
@@ -453,7 +452,7 @@ Then to link to this section in text we would use:
 e.g. Follow [this link](#markdown-header) to get to the top of this
 section
 
-### Inserting images
+## Inserting images
 
 Images can be inserted into the document in a number of ways, but the
 simplest uses a similar syntax to links, but this time preceded by an
@@ -487,7 +486,7 @@ inserts the image like this:
 
 ![Figure 1: Cheetah](images/Rmarkdown_cheetah.png){width="150px"}
 
-### Tables {#tables}
+## Tables {#tables}
 
 Most tables to appear in your documents will be data generated by R code
 chunks, however, on rare occasions we may want to manually include a
@@ -531,7 +530,7 @@ This is rendered as:
 | Keith | Stones  |     Guitar |
 </div>
 
-### Blockquotes
+## Blockquotes
 
 A block quote is often used when we want to quote a piece of text from
 another document. This is done by using the `>` symbol at the beginning
@@ -553,7 +552,7 @@ is rendered as:
 > miners for developing statistical software and data analysis."
 > (Wikipedia)
 
-### Code blocks
+## Code blocks
 
 We have seen that we can highlight text as "code" inline using backticks
 `` `code` ``. This is useful for short snippets of code, but if we want
@@ -582,7 +581,7 @@ metabric %>%
 
 For code that we actually want to run, we will use R code chunks.
 
-## R code chunks
+# R code chunks
 
 R code that we want to run during the rendering of document should be
 placed in an R code chunk. These sections of R code are executed when
@@ -617,7 +616,7 @@ and any output from the code is written underneath. The output might include
 anything that would normally be written to the console (such the result of `x +
 y` here), tables, plots, or even warnings or errors.
 
-### Creating code chunks
+## Creating code chunks
 
 To create a code chunk, you can use the insert icon on the
 toolbar:
@@ -637,14 +636,14 @@ You'll notice a few icons on the right in the toolbar above the code chunk.
 These are used to run the code chunk, run all code chunks above the current
 chunk, and to manage chunk options (see below). 
 
-### Running code chunks
+## Running code chunks
 
 To run a code chunk, you can click the green arrow icon in the toolbar
 above the code chunk, or you can use the keyboard shortcut `Ctrl + Shift
 + Enter` (Windows) or `Cmd + Shift + Enter` (Mac). This will run the
 code in the chunk and display the output below the chunk.
 
-### Chunk options {#chunk_opts}
+## Chunk options {#chunk_opts}
 
 We can apply a number of options to code chunks to control how they are
 rendered in the output document. There are a large number of possible
@@ -675,7 +674,7 @@ options the most common of which are:
 A thorough guide to all the avaialable chunk options (and more `knitr` options)
 can be found [here](https://yihui.org/knitr/options/).
 
-### Chunk label
+## Chunk label
 
 We can specify a label for the code chunk by adding it after the `{r}` in
 the code chunk header:
@@ -693,7 +692,7 @@ of the script panel:
 This gives us a way to navigate through the document and includes any headers and
 code chunks with labels. This is very useful for long documents.
 
-### The "setup" chunk
+## The "setup" chunk
 
 Best practice is to create a "setup" chunk at the beginning of the document.
 This chunk should include all the packages that you will need to run the
@@ -723,7 +722,7 @@ these options in individual chunks by specifying the options in the chunk header
 It's good idea to set `message = FALSE` for the setup chunk so that it does not
 print all the package startup messages in the rendered document.
 
-#### A note on the working directory
+### A note on the working directory
 
 When evaluating code chunks, the default working directory is the location of
 the R Markdown file. This means that any paths to files you wish to read/write 
@@ -735,7 +734,7 @@ projDir <- "/Full/path/to/your/project/directory"
 opts_knit$set(root.dir = projDir)
 ```
 
-### Tabular output
+## Tabular output
 
 By default, R Markdown will display tables in basically the same way as
 they would be displayed in the console. For example, if we display the first few
@@ -753,7 +752,7 @@ Basically imformative, but not very pretty. There are a lot of things we can do
 to make the table a more functional and look better in our report. The simplest
 is to use the `kable()` function from the `knitr` package. 
 
-#### The `kable()` function
+### The `kable()` function
 
 ```{r kable}
 smallTable %>%
@@ -782,7 +781,7 @@ sophisticated ways. There is a list of some of the most popular packages
 Here we will look at two packages: `kableExtra`, which extends the formatting
 capabilities of `kable`, and `DT`, which provides a more interactive table format.
 
-#### The `kableExtra` package
+### The `kableExtra` package
 
 The package `kableExtra` replaces `kable()` with the function `kbl()`
 to display tables in R Markdown. We can then use various formatting 
@@ -812,7 +811,7 @@ smallTable %>%
 More details about all the fancy things you can do with `kableExtra` can be found
 [here](https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html).
 
-#### The `DT` package
+### The `DT` package
 
 The `DT` package provides a more interactive table format that allows us to
 sort, filter, search, and paginate the table. It also provides options to
@@ -884,7 +883,7 @@ R.
 data in the table is all embedded in the final document when it is rendered.
 If you have a very large table resulting document can be very large.
 
-### Plots
+## Plots
 
 If a code chunk generates a plot, the plot will be displayed in the output
 document. 
@@ -947,7 +946,7 @@ mtcars %>%
     theme_minimal()
 ```
 
-#### The `patchwork` package
+### The `patchwork` package
 
 It is often the case that we want to put multiple plots together in a single
 figure. There are various packages that can be used to do this such as `ggarrange`, 
@@ -1000,7 +999,7 @@ get the hang of it, it is very simple to create complex figures with many plots.
 
 Extensive documentation is available [here](https://patchwork.data-imaginist.com/).
 
-## Inline R code
+# Inline R code
 
 It is also possible to include R code inline in the markdown. This is done by
 surrounding the code with single backticks and start it wil `r`. This is useful
@@ -1031,7 +1030,7 @@ six_cyl_mean_mpg <- mtcars %>%
 The mean mpg of cars with 6 cylinders was **`r six_cyl_mean_mpg`**.
 </div>
 
-## Challenge
+# Challenge
 
 Based on the information in this document and in the various links, create a
 report to match the one [here](week7_Rmarkdown_exercise.html). 
@@ -1054,14 +1053,14 @@ example, in the final figure I have added sub-figure labels (a, b, c, d) using
 
 Don't worry about the grey banner at the top, that is part of this website.
 
-## Acknowledgements
+# Acknowledgements
 
 This session was developed with reference to materials by 
 [Alexia Cardona](https://github.com/ac812/reproducibility-training) and
 the 
 [Data Carpentry project](https://datacarpentry.github.io/r-socialsci/instructor/06-rmarkdown.html).
 
-## Session details
+# Session details
 
 It is good practice to include details of the R environment used in the analysis,
 including the R version, packages used and their version numbers. This can be
