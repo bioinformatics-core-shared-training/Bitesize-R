@@ -857,7 +857,7 @@ longTable %>%
 
 The `DT` R packages is a wrapper for the JavaScript library
 [DataTables](https://datatables.net/). Be careful when searching the web for
-information about `DT` that you are not looking the the JavaScript
+information about `DT` that you are not looking at the JavaScript
 documentation.  Also, be carefule not to confuse the `DT` package with the
 `data.table` package, which is a different package for fast data manipulation in
 R.
