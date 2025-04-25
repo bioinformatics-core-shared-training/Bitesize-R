@@ -1,0 +1,16 @@
+---
+title: "Rmarkdown session - MT Cars"
+author: "Ashley Sawle"
+date: "2th April 2025"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+
+There is a popular built-in data set in R called "mtcars" (Motor Trend Car
+Road Tests), which is retrieved from the 1974 Motor Trend US Magazine. The
+dataset contains measurements on 11 different attributes for 32 different
+cars.
+

@@ -4,7 +4,7 @@ author: "Ashley Sawle"
 date: "2th April 2025"
 output:
   html_document:
-    toc: true
+    toc: false
     toc_float: true
 ---
 
@@ -19,9 +19,9 @@ opts_chunk$set(warning = FALSE, echo = TRUE, cache = TRUE)
 ```
 
 
-# The `mtcars` data set
+## The `mtcars` data set
 
-## Description of the data set
+### Description of the data set
 
 There is a popular built-in data set in R called "**mtcars**" (Motor Trend Car
 Road Tests), which is retrieved from the 1974 Motor Trend US Magazine. The
@@ -36,34 +36,34 @@ Subscript: Burning petrol creates CO~2~
 
 Code: Later we will used the `tidyverse` package
 
-# Using tab sets {.tabset}
+## Using tab sets {.tabset}
 
-## Bold
+### Bold
 
 This is **bold**.
 
 It is not ~subscript~.
 
-## Italics
+### Italics
 
 This is *italics*
 
-## Strikethrough
+### Strikethrough
 
 This is ~~strikethrough~~
 
-# End the tabs
+## End the tabs
 
 To end the tabs, start a new section at the same level (or higher) as before.
 
-# A note on linebreaks
+## A note on linebreaks
 
 Rmarkdown does not recognise a new line as a "line break". This is the next line, but it will stay in the same line of text.
 
 Rmarkdown does not recognise a new line as a "line break".\
 To create a break add two (or more) spaces at the end of the previous line.
 
-# Lists (bullet points)
+## Lists (bullet points)
 
 To create an unordered list (bullet points):
 
@@ -88,16 +88,16 @@ Some animals:
     b. Spaniels
 48. Goldfish
 
-# Links
+## Links
 
 Basic syntax is the link text surrounded by square brackes, followed by the link
 surrounded by round brackets.
 
-## External links
+### External links
 
 [Link to the BBC home page](https://www.bbc.co.uk)
 
-## Internal links
+### Internal links
 
 These are links within the document. First we need to create a tag for
 the header we want to link to by adding `{#tag_name}` after the header.
@@ -126,7 +126,7 @@ becomes a caption
 > dataset contains measurements on *11 different* attributes for *32 different*
 > cars.
 
-# R code chunks and option
+## R code chunks
 
 They look like this
 
@@ -186,7 +186,7 @@ smallTable %>%
   kable(digits = 2, align = "c")
 ```
 
-# The `kableExtra` package
+### The `kableExtra` package
 
 ```{r}
 smallTable %>%
@@ -204,12 +204,111 @@ smallTable %>%
   kable_classic(full_width = F)
 ```
 
-## Interactive tables with `DT`
+### Interactive tables with `DT`
 
 ```{r}
 longTable <- mtcars %>%
   rownames_to_column("car")
 longTable %>%
   datatable()
+```
+
+Let's:
+
+* remove the search box
+* change the number of rows displayed to 5
+* add buttons to allow the table to be downloaded
+* customize the column names
+
+```{r}
+longTable %>%
+    datatable(
+        extensions = "Buttons",
+        options = list(
+            dom = "Btip",
+            buttons = c("csv", "excel"),
+            pageLength = 5),
+        colnames = c("Car", "Miles per gallon", "Cylinders", "Weight")
+    )
+```
+
+```
+`dom`:
+
+* l - length changing input control (how many rows to display)
+* f - filtering input (search box)
+* t - table
+* i - table information summary (e.g. “Showing 1 to 10 of 57 entries”)
+* p - pagination control (next/previous buttons)
+* B - buttons (export buttons)
+* r - processing display element (loading indicator)
+```
+
+## Plots
+
+If a code chunk generates a plot it will be displayed in the rendered document.
+We can control the size of the figure and add a caption using the chunk options.
+
+```{r plot, fig.with=5, fig.height=3, fig.cap=figCap}
+figCap <- "Scatter plot of weight vs miles per gallon"
+mtcars %>%
+    ggplot(aes(x = mpg, y = wt)) +
+    geom_point() +
+    labs(title = "Scatter plot of weight vs miles per gallon",
+         x = "Miles per gallon",
+         y = "Weight") +
+    theme_minimal()
+```
+
+### Combining multiple plots with `patchwork`
+
+```{r, patchwork}
+p1 <- mtcars %>%
+    mutate(across(cyl, factor)) %>%
+    ggplot(aes(x = mpg, y = wt)) +
+    geom_point(aes(colour = cyl)) +
+    geom_text(label = "A", x = 22.5, y = 3.5, size = 50)
+p2 <- mtcars %>%
+    mutate(across(cyl, factor)) %>%
+    ggplot(aes(x = gear, y = hp)) +
+    geom_point(aes(colour = cyl)) +
+    geom_text(label = "B", x = 4, y = 195, size = 50)
+p1 + p2 
+```
+
+We can use `+`, `/` and `|` with brackets to control the layout of the plots.
+
+We can also add annotation(e.g title, subtitle, plot labels).
+
+We can also combine the legends.
+
+```{r}
+((p1 + p2) / (p2 + p1 + p2) | (p1 / p2 / p1)) +
+    plot_layout(guides = "collect") +
+    plot_annotation(title = "Patchwork example",
+                    subtitle = "Combining plots with patchwork")
+```
+ 
+## Inline code
+ 
+ Finally, it's possible to include inline within markdown sections. 
+ 
+ Useful if we can to include a value from a variable in the text.
+ 
+```{r inline}
+six_cyl_mean_mpg <- mtcars %>%
+    filter(cyl == 6) %>%
+    summarise(mpg = mean(mpg)) %>%
+    pull(mpg)
+```
+
+The mean mpg of cars with 6 cylinders was **`r six_cyl_mean_mpg`**.
+
+## Session info
+
+Good practice....
+
+```{r}
+devtools::session_info()
 ```
 
