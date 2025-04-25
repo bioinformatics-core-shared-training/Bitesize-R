@@ -772,6 +772,9 @@ smallTable %>%
     kable(digits = 2, align = "c")
 ```
 
+A comprehensive guide to the `kable` function can be found 
+[here](https://bookdown.org/yihui/rmarkdown-cookbook/kable.html).
+
 There are a large number of other packages available to format tables in more
 sophisticated ways. There is a list of some of the most popular packages 
 [here](https://datacarpentry.github.io/r-socialsci/instructor/06-rmarkdown.html#insert-table).
