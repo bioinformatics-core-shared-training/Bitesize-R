@@ -720,6 +720,18 @@ these options in individual chunks by specifying the options in the chunk header
 It's good idea to set `message = FALSE` for the setup chunk so that it does not
 print all the package startup messages in the rendered document.
 
+#### A note on the working directory
+
+When evaluating code chunks, the default working directory is the location of
+the R Markdown file. This means that any paths to files you wish to read/write 
+need to be relative to that directory. If you wish to use a different working
+directory, you can set this in the setup chunk using the following code:
+
+```
+projDir <- "/Full/path/to/your/project/directory"
+opts_knit$set(root.dir = projDir)
+```
+
 ### Tabular output
 
 By default, R Markdown will display tables in basically the same way as
