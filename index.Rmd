@@ -8,7 +8,7 @@ title: "Introduction to R for Biologists"
 This site contains the materials for an R course run by the Bioinformatics Core
 at the Cancer Research UK Cambridge Institute.
 
-March-April 2025
+March-April 2026
 
 ### Instructors
 
