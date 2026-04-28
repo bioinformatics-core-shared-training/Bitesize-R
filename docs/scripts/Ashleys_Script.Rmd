@@ -1,0 +1,218 @@
+---
+title: "Exploring the Metabric data set"
+subtitle: "An example of using R Markdown"
+author: "Ashley D. Sawle"
+date: "24th April 2025"
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float: true
+---
+
+```
+Code chunk: "setup"
+```
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(patchwork)
+library(knitr)
+library(kableExtra)
+knitr::opts_chunk$set(warning = FALSE, echo = FALSE)
+```
+
+## Preamble
+
+The purpose of this document is to show how R Markdown can be used to generate
+a report in HTML format.
+
+## The data
+
+We'll be using an extended version of the METABRIC data set in which columns
+have been added for the mRNA expression values for selected genes, including
+estrogen receptor alpha (**ESR1**), progesterone receptor (**PGR**), **GATA3**
+and **FOXA1**.
+
+The METABRIC study characterized the genomic mutations and gene expression
+profiles for over 2000 primary breast tumours. 
+
+[Curtis *et al.*, Nature 486:346-52, 2012](https://pubmed.ncbi.nlm.nih.gov/22522925)
+
+[Pereira *et al.*, Nature Communications 7:11479, 2016](https://www.ncbi.nlm.nih.gov/pubmed/27161491)
+
+Both the clinical data and the gene expression values were downloaded from
+[cBioPortal](https://www.cbioportal.org/study/summary?id=brca_metabric).
+
+```{r loadData, echo=TRUE, message=FALSE}
+metabric <- read_csv("data/metabric_clinical_and_expression_data.csv") %>%
+    select(Patient_ID,
+           ER_status,
+           HER2_status,
+           `3-gene_classifier`,
+           PAM50, ESR1, ERBB2, PGR, TP53, PIK3CA, GATA3, FOXA1, MLPH)
+```
+
+The table below shows the first few rows of the data for the first 7 columns.
+
+```
+Code chunk: top few rows of table. Note the alignment in the columns.
+```
+
+```{r shortTable}
+metabric %>%
+    select(1:7) %>%
+    slice(1:8) %>%
+    kbl(align = c("l", "c", "c", "c", "c", "r", "r"), digits = 2) %>%
+    kable_styling(bootstrap_options = c("striped", "hover")) %>%
+    column_spec(column = 1, bold = TRUE, border_right = TRUE)
+```
+
+
+## Gene expression by ER status {.tabset}
+
+The figures below show gene expression distribution separated according to ER status. The 
+data are further split by HER2 status.
+
+Four genes are shown:
+
+* ESR1
+* ERBB2
+* GATA3
+* TP53
+
+```
+Code chunks: 1 chunk - set colours for plotting. 4 chunks - one for each plot.
+```
+
+```{r ersCols}
+ersCols <- c(Negative = "#568513", Positive = "#bb802c")
+```
+
+### ESR1
+
+```{r boxESR1, fig.width=6, fig.height=3}
+ggplot(data = metabric, mapping = aes(x = ER_status, y = GATA3)) +
+  geom_boxplot(aes(fill = HER2_status)) +
+  scale_fill_manual(values = ersCols) +
+  labs(x = "ER status") +
+  theme_minimal()
+```
+
+### ERBB2
+
+```{r boxERBB2, fig.width=6, fig.height=3}
+ggplot(data = metabric, mapping = aes(x = ER_status, y = ERBB2)) +
+  geom_boxplot(aes(fill = HER2_status)) +
+  scale_fill_manual(values = ersCols) +
+  labs(x = "ER status") +
+  theme_minimal()
+```
+
+### GATA3
+
+```{r boxGATA3, fig.width=6, fig.height=3}
+ggplot(data = metabric, mapping = aes(x = ER_status, y = GATA3)) +
+  geom_boxplot(aes(fill = HER2_status)) +
+  scale_fill_manual(values = ersCols) +
+  labs(x = "ER status") +
+  theme_minimal()
+```
+
+### TP53 
+
+```{r boxTP53, fig.width=6, fig.height=3}
+ggplot(data = metabric, mapping = aes(x = ER_status, y = TP53)) +
+  geom_boxplot(aes(fill = HER2_status)) +
+  scale_fill_manual(values = ersCols) +
+  labs(x = "ER status") +
+  theme_minimal()
+```
+
+## PAM50 cancer subtype
+
+The PAM50 classification of breast cancer included 5 basic subtypes. An additional
+"claudin low" subtype is also included in metabric and some tumours are not classified (NC).
+The seven categories included in metabric are:
+
+| Category   | Description    |
+| :--------- | :------------- |
+|Basal       | Basal-like     |
+|Her2        | HER2 enriched  |
+|LumA        | Luminal A      |
+|LumB        | Luminal B      |
+|NC          | Not classified |
+|Normal      | Normal-like    |
+|claudin-low | Claudin Low    |
+
+The table below shows the mean gene expression for 8 genes across all samples
+according to their PAM50 cancer subtype.
+
+```
+Code chunk: summarise expression data and generate table
+```
+
+```{r medianExp}
+metabric %>%
+    select(PAM50, ESR1, ERBB2, PGR, TP53, PIK3CA, GATA3, FOXA1, MLPH) %>%
+    summarise(across(everything(), median), .by = PAM50) %>%
+    mutate(across(-PAM50, ~round(.x, 2))) %>%
+    kbl() %>%
+    kable_styling(bootstrap_options = c("striped", "hover")) %>%
+    column_spec(column = 1, bold = TRUE, border_right = TRUE)
+```
+
+## Three gene classifier
+
+Here we look at GATA3 and ESR1 expression according to the three gene classifier.
+
+```
+Code chunk: 4 plots arranged using `patchwork`. Caption in chunk options.
+```
+
+```{r threeGC, fig.width = 14, fig.height = 7, fig.cap = figCap}
+p1 <- metabric %>%
+    ggplot(aes(x = `3-gene_classifier`)) +
+    geom_bar(aes(fill = `3-gene_classifier`), colour = "black") +
+    theme_minimal() +
+    labs(y = "Number of samples") +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+p2 <- metabric %>%
+    ggplot(aes(x = GATA3, y = ESR1)) +
+    geom_point(aes(fill = `3-gene_classifier`), shape = 21, size = 1.5) +
+    guides(fill = "none") +
+    theme_minimal()
+
+p3 <- metabric %>%
+    ggplot(aes(x = `3-gene_classifier`, y = ESR1)) +
+    geom_violin(aes(fill = `3-gene_classifier`), colour = "black") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
+
+p4 <- metabric %>%
+    ggplot(aes(x = `3-gene_classifier`, y = GATA3)) +
+    geom_violin(aes(fill = `3-gene_classifier`), colour = "black") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
+
+p1 + p2 + (p3 / p4) + 
+    plot_layout(guides = "collect") +
+    plot_annotation(tag_levels = "a")
+
+figCap <- str_c("Expression of ESR1 and GATA3 according to 3-gene classifier. ",
+                "(a) Bar plot showing numbers of samples in each category. ",
+                "(b) Scatter plot showing ESR1 expression against GAT3 ",
+                "expression for each sample. ",
+                "(c) Violin plot showing distribution of ESR1 expression. ",
+                "(d) Violin plot showing distribution of GATA3 expression.")
+```
+
+--------------------------------------------------------------------------------
+END OF REPORT
+
+## Session Info
+
+```{r sessionInfo, echo = TRUE}
+devtools::session_info()
+```

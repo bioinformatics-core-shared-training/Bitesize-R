@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Session 8 – Restructuring data for analysis</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"><img style="width: 120px; float: left; margin-top: 0px; margin-right: 20px;" src="images/CRUK_CI_logo.png"/>R for Biologists&nbsp;&nbsp;&nbsp;</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Contents
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="week1.html">Week 1 - Introduction to R</a>
+    </li>
+    <li>
+      <a href="week2.html">Week 2 - Introduction to R data structures</a>
+    </li>
+    <li>
+      <a href="week3.html">Week 3 - Working with data in R</a>
+    </li>
+    <li>
+      <a href="week4.html">Week 4 - Data visualization with ggplot2</a>
+    </li>
+    <li>
+      <a href="week5.html">Week 5 - Data manipulation using dplyr</a>
+    </li>
+    <li>
+      <a href="week6.html">Week 6 - Grouping and combining data</a>
+    </li>
+    <li>
+      <a href="week8.html">Week 8 - Restructuring data for analysis</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/bioinformatics-core-shared-training/Bitesize-R">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Session 8 – Restructuring data for
+analysis</h1>
+
+</div>
+
+
+<blockquote>
+<h4 id="learning-objectives">Learning objectives</h4>
+<ul>
+<li>Understand what makes a data set ‘tidy’ and why you’d want your data
+to be structured this way</li>
+<li>Use <code>pivot_longer()</code> and <code>pivot_wider()</code>
+operations to restructure data frames</li>
+<li>Tease apart columns containing multiple variables using
+<code>separate()</code></li>
+<li>Modify character variables using string manipulation functions from
+the stringr package</li>
+<li>Customize non-data components of plots created using ggplot2 by
+changing the theme</li>
+</ul>
+</blockquote>
+<hr />
+<div id="restructuring-data" class="section level1">
+<h1>Restructuring data</h1>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.4     ✔ readr     2.1.5
+## ✔ forcats   1.0.0     ✔ stringr   1.5.1
+## ✔ ggplot2   3.5.2     ✔ tibble    3.2.1
+## ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+## ✔ purrr     1.0.4     
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<hr />
+</div>
+<div id="tidy-data" class="section level1">
+<h1>Tidy data</h1>
+<p><strong>what is ‘tidy data’</strong></p>
+<p><strong>data from the World Health Organization Global Tuberculosis
+Report</strong></p>
+<pre class="r"><code>table1</code></pre>
+<pre><code>## # A tibble: 6 × 4
+##   country      year  cases population
+##   &lt;chr&gt;       &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;
+## 1 Afghanistan  1999    745   19987071
+## 2 Afghanistan  2000   2666   20595360
+## 3 Brazil       1999  37737  172006362
+## 4 Brazil       2000  80488  174504898
+## 5 China        1999 212258 1272915272
+## 6 China        2000 213766 1280428583</code></pre>
+<p><strong>Two more ways</strong></p>
+<pre class="r"><code>table2</code></pre>
+<pre><code>## # A tibble: 12 × 4
+##    country      year type            count
+##    &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;           &lt;dbl&gt;
+##  1 Afghanistan  1999 cases             745
+##  2 Afghanistan  1999 population   19987071
+##  3 Afghanistan  2000 cases            2666
+##  4 Afghanistan  2000 population   20595360
+##  5 Brazil       1999 cases           37737
+##  6 Brazil       1999 population  172006362
+##  7 Brazil       2000 cases           80488
+##  8 Brazil       2000 population  174504898
+##  9 China        1999 cases          212258
+## 10 China        1999 population 1272915272
+## 11 China        2000 cases          213766
+## 12 China        2000 population 1280428583</code></pre>
+<pre class="r"><code>table3</code></pre>
+<pre><code>## # A tibble: 6 × 3
+##   country      year rate             
+##   &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;            
+## 1 Afghanistan  1999 745/19987071     
+## 2 Afghanistan  2000 2666/20595360    
+## 3 Brazil       1999 37737/172006362  
+## 4 Brazil       2000 80488/174504898  
+## 5 China        1999 212258/1272915272
+## 6 China        2000 213766/1280428583</code></pre>
+<p><strong>Or a split table</strong></p>
+<pre class="r"><code>table4a</code></pre>
+<pre><code>## # A tibble: 3 × 3
+##   country     `1999` `2000`
+##   &lt;chr&gt;        &lt;dbl&gt;  &lt;dbl&gt;
+## 1 Afghanistan    745   2666
+## 2 Brazil       37737  80488
+## 3 China       212258 213766</code></pre>
+<pre class="r"><code>table4b</code></pre>
+<pre><code>## # A tibble: 3 × 3
+##   country         `1999`     `2000`
+##   &lt;chr&gt;            &lt;dbl&gt;      &lt;dbl&gt;
+## 1 Afghanistan   19987071   20595360
+## 2 Brazil       172006362  174504898
+## 3 China       1272915272 1280428583</code></pre>
+<div id="rules-for-tidy-data" class="section level2">
+<h2>Rules for tidy data</h2>
+<div class="rmdblock">
+<p>
+<strong>Tidy data</strong>
+</p>
+<p>
+A tidy data set is a data frame (or table) for which the following are
+true:
+</p>
+<ol style="list-style-type: decimal">
+<li>
+Each <strong>variable</strong> has its own column
+</li>
+<li>
+Each <strong>observation</strong> has its own row
+</li>
+<li>
+Each <strong>value</strong> has its own cell
+</li>
+</ol>
+<p>
+<img src="images/tidy_data.png" />
+</p>
+<p>
+A <strong>variable</strong> contains all values that measure the same
+underlying attribute (like height, temperature, duration) across units.
+</p>
+<p>
+An <strong>observation</strong> contains all values measured on the same
+unit (like a person or a day) across attributes.
+</p>
+</div>
+<p><strong>Question:</strong> <em>Which of the above representations of
+TB cases is tidy?</em></p>
+<p><strong>what are the variables in the TB data set?</strong></p>
+<p><strong>Take another look at tables 4a and 4b</strong></p>
+<hr />
+</div>
+</div>
+<div id="pivoting-operations" class="section level1">
+<h1>Pivoting operations</h1>
+<div id="pivot_longer" class="section level2">
+<h2><code>pivot_longer()</code></h2>
+<pre class="r"><code>table4a</code></pre>
+<pre><code>## # A tibble: 3 × 3
+##   country     `1999` `2000`
+##   &lt;chr&gt;        &lt;dbl&gt;  &lt;dbl&gt;
+## 1 Afghanistan    745   2666
+## 2 Brazil       37737  80488
+## 3 China       212258 213766</code></pre>
+<pre class="r"><code>table4a_long &lt;- pivot_longer(table4a,
+                             c(`1999`, `2000`),
+                             names_to = &quot;year&quot;,
+                             values_to = &quot;cases&quot;)
+table4a_long</code></pre>
+<pre><code>## # A tibble: 6 × 3
+##   country     year   cases
+##   &lt;chr&gt;       &lt;chr&gt;  &lt;dbl&gt;
+## 1 Afghanistan 1999     745
+## 2 Afghanistan 2000    2666
+## 3 Brazil      1999   37737
+## 4 Brazil      2000   80488
+## 5 China       1999  212258
+## 6 China       2000  213766</code></pre>
+<pre class="r"><code>table4b_long &lt;- pivot_longer(table4b,
+                             -country,
+                             names_to = &quot;year&quot;,
+                             values_to = &quot;population&quot;)
+table4b_long</code></pre>
+<pre><code>## # A tibble: 6 × 3
+##   country     year  population
+##   &lt;chr&gt;       &lt;chr&gt;      &lt;dbl&gt;
+## 1 Afghanistan 1999    19987071
+## 2 Afghanistan 2000    20595360
+## 3 Brazil      1999   172006362
+## 4 Brazil      2000   174504898
+## 5 China       1999  1272915272
+## 6 China       2000  1280428583</code></pre>
+<ul>
+<li>join the two pivoted tables to recreate table1*</li>
+</ul>
+<pre class="r"><code>left_join(table4a_long, table4b_long, by = c(&quot;country&quot;, &quot;year&quot;))</code></pre>
+<pre><code>## # A tibble: 6 × 4
+##   country     year   cases population
+##   &lt;chr&gt;       &lt;chr&gt;  &lt;dbl&gt;      &lt;dbl&gt;
+## 1 Afghanistan 1999     745   19987071
+## 2 Afghanistan 2000    2666   20595360
+## 3 Brazil      1999   37737  172006362
+## 4 Brazil      2000   80488  174504898
+## 5 China       1999  212258 1272915272
+## 6 China       2000  213766 1280428583</code></pre>
+</div>
+<div id="pivot_wider" class="section level2">
+<h2><code>pivot_wider()</code></h2>
+<p><code>pivot_wider()</code> has the opposite effect of
+<code>pivot_longer()</code> and can be used to reverse the pivoting
+operation we just performed on <code>table4a</code>.</p>
+<pre class="r"><code>table4a_long</code></pre>
+<pre><code>## # A tibble: 6 × 3
+##   country     year   cases
+##   &lt;chr&gt;       &lt;chr&gt;  &lt;dbl&gt;
+## 1 Afghanistan 1999     745
+## 2 Afghanistan 2000    2666
+## 3 Brazil      1999   37737
+## 4 Brazil      2000   80488
+## 5 China       1999  212258
+## 6 China       2000  213766</code></pre>
+<pre class="r"><code>pivot_wider(table4a_long, names_from = &quot;year&quot;, values_from = &quot;cases&quot;)</code></pre>
+<pre><code>## # A tibble: 3 × 3
+##   country     `1999` `2000`
+##   &lt;chr&gt;        &lt;dbl&gt;  &lt;dbl&gt;
+## 1 Afghanistan    745   2666
+## 2 Brazil       37737  80488
+## 3 China       212258 213766</code></pre>
+<p><strong>Missing values –&gt; NA</strong></p>
+<pre class="r"><code>table4a_long &lt;- head(table4a_long, 5)
+table4a_long</code></pre>
+<pre><code>## # A tibble: 5 × 3
+##   country     year   cases
+##   &lt;chr&gt;       &lt;chr&gt;  &lt;dbl&gt;
+## 1 Afghanistan 1999     745
+## 2 Afghanistan 2000    2666
+## 3 Brazil      1999   37737
+## 4 Brazil      2000   80488
+## 5 China       1999  212258</code></pre>
+<pre class="r"><code>pivot_wider(table4a_long, names_from = &quot;year&quot;, values_from = &quot;cases&quot;)</code></pre>
+<pre><code>## # A tibble: 3 × 3
+##   country     `1999` `2000`
+##   &lt;chr&gt;        &lt;dbl&gt;  &lt;dbl&gt;
+## 1 Afghanistan    745   2666
+## 2 Brazil       37737  80488
+## 3 China       212258     NA</code></pre>
+<p><strong>In some cases the wide format is the more human-readable
+form</strong></p>
+<p><strong>Let’s look again at <code>table2</code>.</strong></p>
+<pre class="r"><code>table2</code></pre>
+<pre><code>## # A tibble: 12 × 4
+##    country      year type            count
+##    &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;           &lt;dbl&gt;
+##  1 Afghanistan  1999 cases             745
+##  2 Afghanistan  1999 population   19987071
+##  3 Afghanistan  2000 cases            2666
+##  4 Afghanistan  2000 population   20595360
+##  5 Brazil       1999 cases           37737
+##  6 Brazil       1999 population  172006362
+##  7 Brazil       2000 cases           80488
+##  8 Brazil       2000 population  174504898
+##  9 China        1999 cases          212258
+## 10 China        1999 population 1272915272
+## 11 China        2000 cases          213766
+## 12 China        2000 population 1280428583</code></pre>
+<p><strong>Are the type and count columns true variables?</strong>
+<strong>And what is the observational unit in this case?</strong></p>
+<p><strong>tell-tale sign is when you have to start manipulating to the
+table to do</strong> <strong>summary calculations or plots</strong></p>
+<p><strong>to create a bar plot of the numbers of TB cases have to first
+remove the rows</strong> <strong>corresponding to the
+populations</strong></p>
+<p><strong>How to calculate the rate of new TB cases</strong></p>
+<pre class="r"><code>table2_fixed &lt;- pivot_wider(table2, names_from = &quot;type&quot;, values_from = &quot;count&quot;)
+table2_fixed</code></pre>
+<pre><code>## # A tibble: 6 × 4
+##   country      year  cases population
+##   &lt;chr&gt;       &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;
+## 1 Afghanistan  1999    745   19987071
+## 2 Afghanistan  2000   2666   20595360
+## 3 Brazil       1999  37737  172006362
+## 4 Brazil       2000  80488  174504898
+## 5 China        1999 212258 1272915272
+## 6 China        2000 213766 1280428583</code></pre>
+<pre class="r"><code>mutate(table2_fixed, rate = cases / population)</code></pre>
+<pre><code>## # A tibble: 6 × 5
+##   country      year  cases population      rate
+##   &lt;chr&gt;       &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;
+## 1 Afghanistan  1999    745   19987071 0.0000373
+## 2 Afghanistan  2000   2666   20595360 0.000129 
+## 3 Brazil       1999  37737  172006362 0.000219 
+## 4 Brazil       2000  80488  174504898 0.000461 
+## 5 China        1999 212258 1272915272 0.000167 
+## 6 China        2000 213766 1280428583 0.000167</code></pre>
+<hr />
+</div>
+</div>
+<div id="splitting-columns" class="section level1">
+<h1>Splitting columns</h1>
+<pre class="r"><code>table3</code></pre>
+<pre><code>## # A tibble: 6 × 3
+##   country      year rate             
+##   &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;            
+## 1 Afghanistan  1999 745/19987071     
+## 2 Afghanistan  2000 2666/20595360    
+## 3 Brazil       1999 37737/172006362  
+## 4 Brazil       2000 80488/174504898  
+## 5 China        1999 212258/1272915272
+## 6 China        2000 213766/1280428583</code></pre>
+<div id="separate_wider_delim" class="section level2">
+<h2><code>separate_wider_delim()</code></h2>
+<p>The <code>separate_wider_delim()</code> function allows us to split a
+character column into multiple columns based on a delimiter or
+separator.</p>
+<pre class="r"><code>table3_separated &lt;- separate_wider_delim(table3,
+                                         rate,
+                                         names = c(&quot;cases&quot;, &quot;population&quot;),
+                                         delim = &quot;/&quot;)
+table3_separated</code></pre>
+<pre><code>## # A tibble: 6 × 4
+##   country      year cases  population
+##   &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;     
+## 1 Afghanistan  1999 745    19987071  
+## 2 Afghanistan  2000 2666   20595360  
+## 3 Brazil       1999 37737  172006362 
+## 4 Brazil       2000 80488  174504898 
+## 5 China        1999 212258 1272915272
+## 6 China        2000 213766 1280428583</code></pre>
+<p><strong>But it’s not quite right</strong></p>
+<pre class="r"><code>mutate(table3_separated, rate = cases / population)</code></pre>
+<pre><code>## Error in `mutate()`:
+## ℹ In argument: `rate = cases/population`.
+## Caused by error in `cases / population`:
+## ! non-numeric argument to binary operator</code></pre>
+<p><strong>need to convert to numerics</strong></p>
+<pre class="r"><code>table3_separated &lt;- separate_wider_delim(table3,
+                                         rate,
+                                         names = c(&quot;cases&quot;, &quot;population&quot;),
+                                         delim = &quot;/&quot;) %&gt;%
+    mutate(across(c(cases, population), as.integer)) %&gt;%
+    mutate(rate = cases / population)
+table3_separated</code></pre>
+<pre><code>## # A tibble: 6 × 5
+##   country      year  cases population      rate
+##   &lt;chr&gt;       &lt;dbl&gt;  &lt;int&gt;      &lt;int&gt;     &lt;dbl&gt;
+## 1 Afghanistan  1999    745   19987071 0.0000373
+## 2 Afghanistan  2000   2666   20595360 0.000129 
+## 3 Brazil       1999  37737  172006362 0.000219 
+## 4 Brazil       2000  80488  174504898 0.000461 
+## 5 China        1999 212258 1272915272 0.000167 
+## 6 China        2000 213766 1280428583 0.000167</code></pre>
+<p>In addition to <code>separate_wider_delim()</code>, the tidyr package
+provides a two other functions for splitting columns:</p>
+<ul>
+<li><code>separate_wider_regex()</code> - for splitting columns based on
+a regular expression</li>
+<li><code>separate_wider_fixed()</code> - for splitting columns based on
+a fixed number of characters</li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="example-1-metabric-gene-expression" class="section level1">
+<h1>Example 1: METABRIC gene expression</h1>
+<pre class="r"><code>metabric &lt;- read_csv(&quot;data/metabric_clinical_and_expression_data.csv&quot;) %&gt;%
+    select(Patient_ID, ER_status, ESR1:MLPH)
+metabric</code></pre>
+<pre><code>## # A tibble: 1,904 × 10
+##    Patient_ID ER_status  ESR1 ERBB2   PGR  TP53 PIK3CA GATA3 FOXA1  MLPH
+##    &lt;chr&gt;      &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 MB-0000    Positive   8.93  9.33  5.68  6.34   5.70  6.93  7.95  9.73
+##  2 MB-0002    Positive  10.0   9.73  7.51  6.19   5.76 11.3  11.8  12.5 
+##  3 MB-0005    Positive  10.0   9.73  7.38  6.40   6.75  9.29 11.7  10.3 
+##  4 MB-0006    Positive  10.4  10.3   6.82  6.87   7.22  8.67 11.9  10.5 
+##  5 MB-0008    Positive  11.3   9.96  7.33  6.34   5.82  9.72 11.6  12.2 
+##  6 MB-0010    Positive  11.2   9.74  5.95  5.42   6.12  9.79 12.1  11.4 
+##  7 MB-0014    Positive  10.8   9.28  7.72  5.99   7.48  8.37 11.5  10.8 
+##  8 MB-0022    Positive  10.4   8.61  5.59  6.17   7.59  7.87 10.7   9.95
+##  9 MB-0028    Positive  12.5  10.7   5.33  6.22   6.25 10.3  12.1  10.9 
+## 10 MB-0035    Positive   7.54 11.5   5.59  6.41   5.99 10.2  12.8  13.5 
+## # ℹ 1,894 more rows</code></pre>
+<p><strong>A single gene boxplot</strong></p>
+<pre class="r"><code>ggplot(metabric) +
+    geom_boxplot(mapping = aes(x = ER_status, y = GATA3))</code></pre>
+<p><img src="week8_teaching_materials_files/figure-html/box_plot_1-1.png" width="480" /></p>
+<p><strong>what if we would like to create a series of plots using
+faceting</strong></p>
+<pre class="r"><code>metabric &lt;- pivot_longer(metabric,
+                         ESR1:MLPH,
+                         names_to = &quot;Gene&quot;,
+                         values_to = &quot;Expression&quot;)
+metabric</code></pre>
+<pre><code>## # A tibble: 15,232 × 4
+##    Patient_ID ER_status Gene   Expression
+##    &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;       &lt;dbl&gt;
+##  1 MB-0000    Positive  ESR1         8.93
+##  2 MB-0000    Positive  ERBB2        9.33
+##  3 MB-0000    Positive  PGR          5.68
+##  4 MB-0000    Positive  TP53         6.34
+##  5 MB-0000    Positive  PIK3CA       5.70
+##  6 MB-0000    Positive  GATA3        6.93
+##  7 MB-0000    Positive  FOXA1        7.95
+##  8 MB-0000    Positive  MLPH         9.73
+##  9 MB-0002    Positive  ESR1        10.0 
+## 10 MB-0002    Positive  ERBB2        9.73
+## # ℹ 15,222 more rows</code></pre>
+<pre class="r"><code>ggplot(data = metabric,
+       mapping = aes(x = ER_status, y = Expression)) +
+    geom_boxplot() +
+    facet_wrap(vars(Gene))</code></pre>
+<p><img src="week8_teaching_materials_files/figure-html/box_plot_2-1.png" width="672" /></p>
+<p><strong>If we want to be able to plot one gene against
+another</strong></p>
+<pre class="r"><code>metabric %&gt;%
+    pivot_wider(names_from = &quot;Gene&quot;, values_from = &quot;Expression&quot;) %&gt;%
+    ggplot() +
+    geom_point(mapping = aes(x = GATA3, y = ESR1, colour = ER_status))</code></pre>
+<p><img src="week8_teaching_materials_files/figure-html/scatter_plot_1-1.png" width="672" /></p>
+<hr />
+</div>
+<div
+id="example-2-protein-levels-in-mcf-7-after-treatment-with-tamoxifen"
+class="section level1">
+<h1>Example 2: Protein levels in MCF-7 after treatment with
+tamoxifen</h1>
+<pre class="r"><code>library(readxl)
+protein_levels &lt;- read_excel(&quot;data/41467_2018_4619_MOESM11_ESM.xlsx&quot;, skip = 1)
+select(protein_levels, `Uniprot Accession`, `Gene Name`, ends_with(&quot;rep01&quot;))</code></pre>
+<pre><code>## # A tibble: 7,943 × 6
+##    `Uniprot Accession` `Gene Name` vehicle.rep01 tam.2h.rep01 tam.6h.rep01
+##    &lt;chr&gt;               &lt;chr&gt;               &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
+##  1 Q09666              AHNAK                17.3         17.3         17.3
+##  2 P05787              KRT8                 16.9         17.1         17.0
+##  3 Q15149              PLEC                 16.7         16.7         16.7
+##  4 P21333              FLNA                 16.6         16.5         16.6
+##  5 P05783              KRT18                16.4         16.6         16.5
+##  6 P49327              FASN                 16.0         16.0         16.0
+##  7 P10809              HSPD1                16.1         16.2         16.1
+##  8 Q14204              DYNC1H1              16.0         15.9         16.0
+##  9 O75369              FLNB                 16.1         16.1         16.2
+## 10 P35579              MYH9                 15.7         15.6         15.8
+## # ℹ 7,933 more rows
+## # ℹ 1 more variable: tam.24h.rep01 &lt;dbl&gt;</code></pre>
+<p><strong>Let’s just use a subset of the table</strong></p>
+<pre class="r"><code>protein_levels &lt;- protein_levels %&gt;%
+    filter(`log2FC(24h/veh)` &lt; -0.75) %&gt;%
+    select(accession = `Uniprot Accession`,
+           gene = `Gene Name`,
+           vehicle.rep01:tam.24h.rep04)
+protein_levels</code></pre>
+<pre><code>## # A tibble: 10 × 18
+##    accession gene    vehicle.rep01 tam.2h.rep01 tam.6h.rep01 tam.24h.rep01
+##    &lt;chr&gt;     &lt;chr&gt;           &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;         &lt;dbl&gt;
+##  1 Q4ZG55    GREB1           12.1         12           11.6           9.78
+##  2 P15514    AREG            11.4         11.3         11.3           9.92
+##  3 Q13433    SLC39A6         10.9         10.8         10.7           9.89
+##  4 Q9NPD8    UBE2T           10.4         10.3         10.2           9.62
+##  5 Q6N021    TET2            10.1         10.0          9.59          8.75
+##  6 P06401    PGR              9.97        10.0          9.75          8.75
+##  7 P25929    NPY1R            9.08         9.16         8.89          7.94
+##  8 O95084    PRSS23           8.45         8.53         8.27          7.78
+##  9 P08493    MGP              6.76         6.76         6.18          5.09
+## 10 Q96BR1    SGK3             6.33         6.42         6.16          5.5 
+## # ℹ 12 more variables: vehicle.rep02 &lt;dbl&gt;, tam.2h.rep02 &lt;dbl&gt;,
+## #   tam.6h.rep02 &lt;dbl&gt;, tam.24h.rep02 &lt;dbl&gt;, vehicle.rep03 &lt;dbl&gt;,
+## #   tam.2h.rep03 &lt;dbl&gt;, tam.6h.rep03 &lt;dbl&gt;, tam.24h.rep03 &lt;dbl&gt;,
+## #   vehicle.rep04 &lt;dbl&gt;, tam.2h.rep04 &lt;dbl&gt;, tam.6h.rep04 &lt;dbl&gt;,
+## #   tam.24h.rep04 &lt;dbl&gt;</code></pre>
+<p><strong>Column names show:</strong></p>
+<ul>
+<li>the treatment</li>
+<li>the time at which the protein levels are measured after
+treatment</li>
+<li>the number of the replicate sample for that treatment and time
+point</li>
+</ul>
+<p><strong>First pivot</strong></p>
+<pre class="r"><code>protein_levels &lt;- pivot_longer(protein_levels,
+                               vehicle.rep01:tam.24h.rep04,
+                               names_to = &quot;sample&quot;,
+                               values_to = &quot;protein_level&quot;)
+protein_levels</code></pre>
+<pre><code>## # A tibble: 160 × 4
+##    accession gene  sample        protein_level
+##    &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;                 &lt;dbl&gt;
+##  1 Q4ZG55    GREB1 vehicle.rep01         12.1 
+##  2 Q4ZG55    GREB1 tam.2h.rep01          12   
+##  3 Q4ZG55    GREB1 tam.6h.rep01          11.6 
+##  4 Q4ZG55    GREB1 tam.24h.rep01          9.78
+##  5 Q4ZG55    GREB1 vehicle.rep02         11.3 
+##  6 Q4ZG55    GREB1 tam.2h.rep02          11.4 
+##  7 Q4ZG55    GREB1 tam.6h.rep02          11.1 
+##  8 Q4ZG55    GREB1 tam.24h.rep02          8.98
+##  9 Q4ZG55    GREB1 vehicle.rep03         11.0 
+## 10 Q4ZG55    GREB1 tam.2h.rep03          11.0 
+## # ℹ 150 more rows</code></pre>
+<p><strong>Now we can use <code>separate()</code></strong></p>
+<p><strong>Problem with the control</strong></p>
+<p><strong>Some useful stringr functions</strong></p>
+<pre class="r"><code>str_c(&quot;tidyverse&quot;, &quot;fab&quot;, sep = &quot; is &quot;)</code></pre>
+<pre><code>## [1] &quot;tidyverse is fab&quot;</code></pre>
+<pre class="r"><code>str_replace(&quot;Oscar is the best cat in the world&quot;, &quot;best&quot;, &quot;loveliest&quot;)</code></pre>
+<pre><code>## [1] &quot;Oscar is the loveliest cat in the world&quot;</code></pre>
+<pre class="r"><code>str_replace_all(&quot;the cat sat on the mat&quot;, &quot;at&quot;, &quot;AT&quot;)</code></pre>
+<pre><code>## [1] &quot;the cAT sAT on the mAT&quot;</code></pre>
+<pre class="r"><code>str_remove(&quot;the cat sat on the mat&quot;, &quot;at&quot;)</code></pre>
+<pre><code>## [1] &quot;the c sat on the mat&quot;</code></pre>
+<pre class="r"><code>str_remove_all(&quot;the cat sat on the mat&quot;, &quot;at&quot;)</code></pre>
+<pre><code>## [1] &quot;the c s on the m&quot;</code></pre>
+<pre class="r"><code>str_sub(c(&quot;tamoxifen&quot;, &quot;vehicle&quot;), 1, 3)</code></pre>
+<pre><code>## [1] &quot;tam&quot; &quot;veh&quot;</code></pre>
+<pre class="r"><code>str_replace(&quot;vehicle.rep01&quot;, &quot;vehicle&quot;, &quot;vehicle.24h&quot;)</code></pre>
+<pre><code>## [1] &quot;vehicle.24h.rep01&quot;</code></pre>
+<pre class="r"><code>str_replace(protein_levels$sample[1:10], &quot;vehicle&quot;, &quot;vehicle.24h&quot;)</code></pre>
+<pre><code>##  [1] &quot;vehicle.24h.rep01&quot; &quot;tam.2h.rep01&quot;      &quot;tam.6h.rep01&quot;     
+##  [4] &quot;tam.24h.rep01&quot;     &quot;vehicle.24h.rep02&quot; &quot;tam.2h.rep02&quot;     
+##  [7] &quot;tam.6h.rep02&quot;      &quot;tam.24h.rep02&quot;     &quot;vehicle.24h.rep03&quot;
+## [10] &quot;tam.2h.rep03&quot;</code></pre>
+<pre class="r"><code>protein_levels &lt;- mutate(protein_levels,
+                         sample = str_replace(sample, &quot;vehicle&quot;, &quot;vehicle.24h&quot;))
+protein_levels</code></pre>
+<pre><code>## # A tibble: 160 × 4
+##    accession gene  sample            protein_level
+##    &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;                     &lt;dbl&gt;
+##  1 Q4ZG55    GREB1 vehicle.24h.rep01         12.1 
+##  2 Q4ZG55    GREB1 tam.2h.rep01              12   
+##  3 Q4ZG55    GREB1 tam.6h.rep01              11.6 
+##  4 Q4ZG55    GREB1 tam.24h.rep01              9.78
+##  5 Q4ZG55    GREB1 vehicle.24h.rep02         11.3 
+##  6 Q4ZG55    GREB1 tam.2h.rep02              11.4 
+##  7 Q4ZG55    GREB1 tam.6h.rep02              11.1 
+##  8 Q4ZG55    GREB1 tam.24h.rep02              8.98
+##  9 Q4ZG55    GREB1 vehicle.24h.rep03         11.0 
+## 10 Q4ZG55    GREB1 tam.2h.rep03              11.0 
+## # ℹ 150 more rows</code></pre>
+<pre class="r"><code>protein_levels &lt;- separate_wider_delim(protein_levels,
+                                       sample,
+                                       names = c(&quot;treatment&quot;, &quot;time&quot;, &quot;replicate&quot;),
+                                       delim = &quot;.&quot;)
+protein_levels</code></pre>
+<pre><code>## # A tibble: 160 × 6
+##    accession gene  treatment time  replicate protein_level
+##    &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;             &lt;dbl&gt;
+##  1 Q4ZG55    GREB1 vehicle   24h   rep01             12.1 
+##  2 Q4ZG55    GREB1 tam       2h    rep01             12   
+##  3 Q4ZG55    GREB1 tam       6h    rep01             11.6 
+##  4 Q4ZG55    GREB1 tam       24h   rep01              9.78
+##  5 Q4ZG55    GREB1 vehicle   24h   rep02             11.3 
+##  6 Q4ZG55    GREB1 tam       2h    rep02             11.4 
+##  7 Q4ZG55    GREB1 tam       6h    rep02             11.1 
+##  8 Q4ZG55    GREB1 tam       24h   rep02              8.98
+##  9 Q4ZG55    GREB1 vehicle   24h   rep03             11.0 
+## 10 Q4ZG55    GREB1 tam       2h    rep03             11.0 
+## # ℹ 150 more rows</code></pre>
+<pre class="r"><code>protein_levels &lt;- protein_levels %&gt;%
+    mutate(group = str_sub(treatment, 1, 3)) %&gt;%
+    mutate(group = str_c(group, time)) %&gt;%
+    mutate(group = as_factor(group))
+protein_levels</code></pre>
+<pre><code>## # A tibble: 160 × 7
+##    accession gene  treatment time  replicate protein_level group 
+##    &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;             &lt;dbl&gt; &lt;fct&gt; 
+##  1 Q4ZG55    GREB1 vehicle   24h   rep01             12.1  veh24h
+##  2 Q4ZG55    GREB1 tam       2h    rep01             12    tam2h 
+##  3 Q4ZG55    GREB1 tam       6h    rep01             11.6  tam6h 
+##  4 Q4ZG55    GREB1 tam       24h   rep01              9.78 tam24h
+##  5 Q4ZG55    GREB1 vehicle   24h   rep02             11.3  veh24h
+##  6 Q4ZG55    GREB1 tam       2h    rep02             11.4  tam2h 
+##  7 Q4ZG55    GREB1 tam       6h    rep02             11.1  tam6h 
+##  8 Q4ZG55    GREB1 tam       24h   rep02              8.98 tam24h
+##  9 Q4ZG55    GREB1 vehicle   24h   rep03             11.0  veh24h
+## 10 Q4ZG55    GREB1 tam       2h    rep03             11.0  tam2h 
+## # ℹ 150 more rows</code></pre>
+<p>Computing the mean protein levels within each group is now very
+straightforward.</p>
+<pre class="r"><code>protein_levels %&gt;%
+    group_by(accession, gene, group) %&gt;%
+    summarize(protein_level = mean(protein_level))</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;accession&#39;, &#39;gene&#39;. You can override using
+## the `.groups` argument.</code></pre>
+<pre><code>## # A tibble: 40 × 4
+## # Groups:   accession, gene [10]
+##    accession gene   group  protein_level
+##    &lt;chr&gt;     &lt;chr&gt;  &lt;fct&gt;          &lt;dbl&gt;
+##  1 O95084    PRSS23 veh24h          8.16
+##  2 O95084    PRSS23 tam2h           8.2 
+##  3 O95084    PRSS23 tam6h           8.03
+##  4 O95084    PRSS23 tam24h          7.20
+##  5 P06401    PGR    veh24h          9.44
+##  6 P06401    PGR    tam2h           9.66
+##  7 P06401    PGR    tam6h           9.41
+##  8 P06401    PGR    tam24h          8.39
+##  9 P08493    MGP    veh24h          5.59
+## 10 P08493    MGP    tam2h           5.69
+## # ℹ 30 more rows</code></pre>
+<hr />
+</div>
+<div id="further-customization-of-plots-with-ggplot2"
+class="section level1">
+<h1>Further customization of plots with ggplot2</h1>
+<div id="themes" class="section level2">
+<h2>Themes</h2>
+<pre class="r"><code># read in the METABRIC data, convert the Integrative_cluster variable into a
+# categorical variable with the levels in the correct order, and select just
+# the columns and rows we&#39;re going to use
+cluster_order &lt;- c(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4ER-&quot;, &quot;4ER+&quot;, &quot;5&quot;, &quot;6&quot;, &quot;7&quot;, &quot;8&quot;, &quot;9&quot;, &quot;10&quot;)
+metabric &lt;- read_csv(&quot;data/metabric_clinical_and_expression_data.csv&quot;) %&gt;%
+    mutate(Integrative_cluster = factor(Integrative_cluster,
+                                        levels = cluster_order)) %&gt;%
+    mutate(`3-gene_classifier` = replace_na(`3-gene_classifier`,
+                                            &quot;Unclassified&quot;)) %&gt;%
+    select(Patient_ID,
+           ER_status,
+           PR_status,
+           `3-gene_classifier`,
+           Integrative_cluster,
+           ESR1) %&gt;%
+    filter(!is.na(Integrative_cluster), !is.na(ESR1))
+metabric</code></pre>
+<pre><code>## # A tibble: 1,904 × 6
+##    Patient_ID ER_status PR_status `3-gene_classifier`  Integrative_cluster  ESR1
+##    &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;                &lt;fct&gt;               &lt;dbl&gt;
+##  1 MB-0000    Positive  Negative  ER-/HER2-            4ER+                 8.93
+##  2 MB-0002    Positive  Positive  ER+/HER2- High Prol… 4ER+                10.0 
+##  3 MB-0005    Positive  Positive  Unclassified         3                   10.0 
+##  4 MB-0006    Positive  Positive  Unclassified         9                   10.4 
+##  5 MB-0008    Positive  Positive  ER+/HER2- High Prol… 9                   11.3 
+##  6 MB-0010    Positive  Positive  ER+/HER2- High Prol… 7                   11.2 
+##  7 MB-0014    Positive  Positive  Unclassified         3                   10.8 
+##  8 MB-0022    Positive  Negative  Unclassified         3                   10.4 
+##  9 MB-0028    Positive  Negative  ER+/HER2- High Prol… 9                   12.5 
+## 10 MB-0035    Positive  Negative  ER+/HER2- High Prol… 3                    7.54
+## # ℹ 1,894 more rows</code></pre>
+<pre class="r"><code>plot &lt;- ggplot(data = metabric) +
+    geom_boxplot(mapping = aes(x = Integrative_cluster, y = ESR1, fill = Integrative_cluster)) +
+    labs(x = &quot;Integrative cluster&quot;, y = &quot;ESR1 expression&quot;)
+plot</code></pre>
+<p><img src="week8_teaching_materials_files/figure-html/box_plot_4-1.png" width="672" /></p>
+<pre class="r"><code>plot + theme_bw()</code></pre>
+<p><img src="week8_teaching_materials_files/figure-html/box_plot_5-1.png" width="672" /></p>
+<pre class="r"><code>plot +
+  theme_bw() +
+  theme(
+    panel.grid.major.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    legend.position = &quot;none&quot;
+  )</code></pre>
+<p><img src="week8_teaching_materials_files/figure-html/box_plot_6-1.png" width="672" /></p>
+<p>Here’s another example that also involves customizing the labels,
+scales and colours.</p>
+<pre class="r"><code>ggplot(data = metabric) +
+    geom_bar(mapping = aes(x = `3-gene_classifier`, fill = ER_status)) +
+    scale_y_continuous(limits = c(0, 700),
+                       breaks = seq(0, 700, 100),
+                       expand = expand_scale(mult = 0)) +
+    scale_fill_manual(values = c(&quot;firebrick2&quot;, &quot;dodgerblue2&quot;)) +
+    labs(x = NULL, y = &quot;samples&quot;, fill = &quot;ER status&quot;) +
+    theme_bw() +
+    theme(panel.border = element_blank(),
+          panel.grid = element_blank(),
+          axis.ticks.x = element_blank(),
+          axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+          axis.line.y = element_line(),
+          axis.ticks.length.y = unit(0.2, &quot;cm&quot;),
+          legend.position = &quot;bottom&quot;)</code></pre>
+<pre><code>## Warning: `expand_scale()` was deprecated in ggplot2 3.3.0.
+## ℹ Please use `expansion()` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## generated.</code></pre>
+<p><img src="week8_teaching_materials_files/figure-html/bar_plot_1-1.png" width="480" /></p>
+<pre class="r"><code>library(ggthemes)
+metabric %&gt;%
+    filter(`3-gene_classifier` == &quot;HER2+&quot;) %&gt;%
+    ggplot(mapping = aes(x = PR_status, y = ESR1)) +
+    geom_boxplot() +
+    geom_jitter(mapping = aes(colour = PR_status),
+                width = 0.25,
+                alpha = 0.4,
+                show.legend = FALSE) +
+    scale_colour_brewer(palette = &quot;Set1&quot;) +
+    labs(x = &quot;PR status&quot;, y = &quot;ESR1 expression&quot;) +
+    theme_gdocs()</code></pre>
+<p><img src="week8_teaching_materials_files/figure-html/box_plot_7-1.png" width="480" /></p>
+</div>
+<div id="position-adjustments" class="section level2">
+<h2>Position adjustments</h2>
+<p>SKIP</p>
+</div>
+<div id="saving-plot-images" class="section level2">
+<h2>Saving plot images</h2>
+<p>Use <code>ggsave()</code> to save the last plot you displayed.</p>
+<pre class="r"><code>ggsave(&quot;esr1_expression.png&quot;)</code></pre>
+<p>You can alter the width and height of the plot and can change the
+image file type.</p>
+<pre class="r"><code>ggsave(&quot;esr1_expression.pdf&quot;, width = 20, height = 12, units = &quot;cm&quot;)</code></pre>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
